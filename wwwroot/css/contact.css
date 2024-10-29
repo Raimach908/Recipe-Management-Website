@@ -1,0 +1,208 @@
+﻿.contact-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px;
+    font-family: 'Georgia', serif;
+    background-color: #fff;
+    color: #333;
+}
+
+    /* Remove default bullets from all lists within contact container */
+    .contact-container ul,
+    .contact-container ol {
+        list-style-type: none; /* Remove bullets */
+        padding: 0; /* Remove default padding */
+        margin: 0; /* Remove default margin */
+    }
+
+/* Row 1: Map and Contact Info */
+.map-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.map-container {
+    flex: 2;
+    min-width: 320px;
+    border: 2px solid #b6542d;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Updated styling for the contact-info card */
+.contact-info {
+    flex: 1;
+    min-width: 380px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 2px solid #b6542d;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+    /* Update the heading color for better contrast */
+    .contact-info h3 {
+        font-size: 24px;
+        color: #b6542d;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #b6542d; /* Add a bottom border to the heading */
+        padding-bottom: 10px; /* Spacing below the heading */
+    }
+
+    /* Style the paragraphs for better spacing */
+    .contact-info p {
+        margin: 15px 0;
+        font-size: 16px;
+        color: #333;
+    }
+
+        /* Additional styles for icons */
+        .contact-info p i {
+            color: #b6542d;
+            margin-right: 8px;
+            transition: transform 0.3s; /* Transition effect for icons */
+        }
+
+            .contact-info p i:hover {
+                transform: scale(1.1); /* Scale effect on hover */
+            }
+
+.social-icons {
+    display: flex;
+    gap: 15px; /* Space between icons */
+    margin-top: 15px;
+}
+
+    .social-icons i {
+        font-size: 24px; /* Adjust icon size */
+        background-color: white; /* White background */
+        color: #b6542d; /* Icon color */
+        border: 2px solid #b6542d; /* Border color */
+        border-radius: 50%; /* Make it circular */
+        width: 40px; /* Width of the circle */
+        height: 40px; /* Height of the circle */
+        display: flex; /* Align items in the center */
+        align-items: center; /* Center vertically */
+        justify-content: center; /* Center horizontally */
+        transition: background-color 0.3s, color 0.3s; /* Transition effect */
+    }
+
+        .social-icons i:hover {
+            background-color: #b6542d;
+            color: white; /* Change icon color on hover */
+            transform: scale(1.1);
+        }
+
+/* Row 2: Leave a Message Form and Working Hours */
+.form-hours-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.message-form,
+.working-hours {
+    flex: 1;
+    min-width: 320px;
+    padding: 40px;
+}
+
+    .message-form h3,
+    .working-hours h3 {
+        font-size: 26px;
+        color: #b6542d;
+        margin-bottom: 20px;
+    }
+
+    .message-form form input,
+    .message-form form textarea,
+    .working-hours ul {
+        width: 100%;
+        padding: 12px;
+        margin: 12px 0;
+        border: 1px solid #b6542d;
+        border-radius: 5px;
+        color: #333;
+        background-color: #fff;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+        .message-form form input:focus,
+        .message-form form textarea:focus {
+            border-color: #9a4120;
+            box-shadow: 0 0 6px rgba(182, 84, 45, 0.3);
+            outline: none;
+        }
+
+    .message-form form button {
+        padding: 12px 25px;
+        border: none;
+        background-color: #b6542d;
+        color: #fff;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+        .message-form form button:hover {
+            background-color: #9a4120;
+            transform: translateY(-2px);
+        }
+
+/* Additional styling for the working hours section */
+.working-hours {
+    font-family: 'Lobster', cursive;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align items at the start */
+}
+
+.working-hours-list {
+    padding-left: 0; /* Reset padding */
+    margin-top: 10px; /* Space above the list */
+}
+
+    .working-hours-list li {
+        display: flex;
+        justify-content: space-between; /* Align time to the right */
+        padding: 8px 0; /* Space between items */
+        font-size: 16px;
+        color: #666;
+        border-bottom: 1px solid #b6542d; /* Add bottom border for separation */
+    }
+
+        .working-hours-list li:last-child {
+            border-bottom: none; /* Remove border for the last item */
+        }
+
+        /* Styling for the time on the right */
+        .working-hours-list li span {
+            color: #b6542d; /* Color for the time */
+            font-weight: bold; /* Make it bold */
+            margin-left: auto; /* Push time to the right */
+        }
+
+/* Additional styling for improved layout and spacing */
+.row {
+    margin-bottom: 40px;
+}
+
+/* Responsive adjustments */
+@@media (max-width: 768px) {
+    .map-info-row,
+    .form-hours-row {
+        flex-direction: column;
+    }
+
+    .map-container,
+    .contact-info,
+    .message-form,
+    .working-hours {
+        min-width: 100%;
+    }
+}

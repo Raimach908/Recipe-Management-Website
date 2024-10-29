@@ -1,0 +1,15 @@
+﻿<input id="searchInput" type="text" @bind="SearchText" />
+<button id="searchbtn" @onclick="SearchClicked">Search</button>
+
+<link href="css/card.css" rel="stylesheet" />
+
+@code {
+    [Parameter] public string SearchText { get; set; }
+    [Parameter] public EventCallback<string> SearchTextChanged { get; set; }
+
+    // Called when the search button is clicked
+    private async Task SearchClicked()
+    {
+        await SearchTextChanged.InvokeAsync(SearchText);
+    }
+}

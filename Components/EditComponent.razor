@@ -1,0 +1,50 @@
+﻿@inject NavigationManager Navigation
+
+<!-- Modal-like Edit ID Form -->
+@if (showEditForm)
+{
+    <div class="modal-backdrop" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1040;">
+        <div class="modal-dialog" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; z-index: 1050;">
+            <h5 class="text-center mb-4">Enter Recipe ID to Edit</h5>
+            <input type="text" @bind="recipeId" class="form-control" placeholder="Recipe ID" style="margin-bottom: 10px;" />
+            <div class="text-center">
+                <button class="btn btn-danger" @onclick="EditRecipe">Edit Recipe</button>
+                <button class="btn btn-secondary ms-2" @onclick="HideEditForm">Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private bool showEditForm = true; // Track whether to show the edit form
+    [Parameter] public EventCallback OnCancel { get; set; }
+    private string? recipeId; // Track the entered recipe ID
+
+    // Show the modal form for inputting Recipe ID
+    public void Show()
+    {
+        showEditForm = true;
+        StateHasChanged(); // Trigger a UI update to show the form
+    }
+
+    // Hide the modal form and reset input
+    private void HideEditForm()
+    {
+        showEditForm = false;
+        recipeId = null; // Reset the input field
+        OnCancel.InvokeAsync(); // Trigger event to notify parent about cancel action
+        StateHasChanged(); // Trigger a UI update to hide the form
+    }
+
+    // Handle the recipe edit by navigating to the corresponding URL
+    private void EditRecipe()
+    {
+        if (!string.IsNullOrWhiteSpace(recipeId))
+        {
+            // Navigate to the recipe details page using the entered ID
+            Navigation.NavigateTo($"/recipeDetails/{recipeId}");
+        }
+        showEditForm = false; // Hide the form after submission
+        StateHasChanged(); // Ensure the form is hidden immediately after navigation
+    }
+}

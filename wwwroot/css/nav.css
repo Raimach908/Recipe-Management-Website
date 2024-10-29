@@ -1,0 +1,75 @@
+﻿/* Top Bar Styling */
+.top-bar {
+    background-color: #b6542d;
+    color: white;
+    font-family: 'Georgia', serif;
+}
+
+.top-bar a {
+    color: white;
+    transition: color 0.3s ease;
+}
+
+    .top-bar a:hover {
+        color: #FFCC00;
+    }
+
+/* Navbar Styling */
+.navbar {
+    padding: 10px 10px;
+    font-family: 'Georgia', serif;
+    height: 60px;
+}
+
+    .navbar ul {
+        list-style-type: none;
+        gap: 10px;
+    }
+
+.nav-link {
+    color: #b6542d !important;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 16px;
+}
+
+    .nav-link:hover {
+        color: #FFCC00 !important;
+    }
+
+.navbar-brand {
+    font-family: 'Georgia', serif;
+    font-weight: bold;
+}
+
+/* Footer Styling */
+#footer {
+    background-color: #b6542d;
+}
+
+.footer-animated h5, .footer-animated p, .footer-animated li {
+    font-family: 'Georgia', serif;
+}
+
+.footer-animated a {
+    color: white;
+    transition: color 0.3s ease;
+}
+
+    .footer-animated a:hover {
+        color: #FFCC00;
+    }
+
+/* Ensure the footer sticks to the bottom of the page */
+.min-vh-100 {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+/* Body Styling */
+body {
+    font-family: 'Georgia', serif;
+}
+

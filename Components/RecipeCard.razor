@@ -1,0 +1,56 @@
+﻿@using RecipeManagementApp.Data;
+
+@if (recipe != null)
+{
+    <div class="card recipe-card mb-3 shadow-sm">
+        <div class="card-header">
+            <h4 class="mb-0" style="font-weight: bold;">@recipe.Name</h4>
+        </div>
+        <div class="card-body">
+            <img src="@recipe.ImageUrl" alt="@recipe.Name" class="card-img-top recipe-image" />
+            <br /><br />
+            <p class="card-text"><strong>Description:</strong> @recipe.Description</p>
+
+            <p><strong>Ingredients:</strong></p>
+            <ul class="list-styled">
+                @if (recipe.Ingredients != null && recipe.Ingredients.Any())
+                {
+                    foreach (var ingredient in recipe.Ingredients)
+                    {
+                        <li>@ingredient</li>
+                    }
+                }
+                else
+                {
+                    <li>No ingredients available.</li>
+                }
+            </ul>
+
+            <p><strong>Instructions:</strong> @recipe.Instructions</p>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <p class="mb-0 align-content-center"><strong>Category:</strong> @recipe.Category</p>
+            <button class="btn btn-danger" id="delbtn" @onclick="OnDeleteClicked">Delete</button> 
+        </div>
+    </div>
+}
+else
+{
+    <p class="none">No recipe found.</p>
+}
+<link href="css/card.css" rel="stylesheet" />
+@code {
+    [Parameter]
+    public Recipe recipe { get; set; }
+
+    [Parameter]
+    public EventCallback<Recipe> OnDelete { get; set; } 
+
+    private async Task OnDeleteClicked()
+    {
+        if (OnDelete.HasDelegate)
+        {
+            await OnDelete.InvokeAsync(recipe); // Invoke the delete callback
+        }
+    }
+}

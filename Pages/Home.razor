@@ -1,0 +1,236 @@
+﻿@page "/"
+
+@using Microsoft.AspNetCore.Components
+
+<PageTitle>Recipe Management Home</PageTitle>
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+<!-- Hero Section with Overlayed Image -->
+<div class="container-fluid p-0 position-relative" style="background-image: url('/Images/front1.jfif'); background-size: cover; height: 100vh;">
+    <div class="overlay position-absolute w-100 h-100"></div>
+
+    <!-- Content Section with spacing adjustments for alignment -->
+    <div class="row h-100 m-0">
+        <!-- Left Side Text Content -->
+        <div class="col-md-8 d-flex flex-column justify-content-center align-items-start text-white pl-md-5 pl-3 hero-text">
+            <h1 class="display-4 font-weight-bold mb-3 animated-text" style="font-family: 'Georgia', serif;">
+                WELCOME TO <span style="color: #b6542d;">YOUR RECIPE VAULT</span>
+            </h1>
+            <p class="lead mb-2 animated-text-delay" style="font-family: 'Georgia', serif;">
+                Discover, Cook & Share the Best Recipes
+            </p>
+            <p class="lead mb-4 animated-text-delay" style="font-family: 'Georgia', serif;">
+                Find new and exciting recipes, share your own, and become part of a growing cooking community!
+            </p>
+            <a href="/recipeList" class="btn btn-lg animated-button" style="font-family: 'Georgia', serif; font-weight: bold; background-color: #b6542d; color: white;">
+                Explore Recipes
+            </a>
+        </div>
+
+        <!-- Right Side Image -->
+        <div class="col-md-4 d-flex align-items-center justify-content-center">
+            <img src="/Images/front2.png" class="overlay-image" alt="Decorative image for cooking" />
+        </div>
+    </div>
+</div>
+
+<!-- Featured Recipes Section -->
+<div class="container my-5 text-center">
+    <h2 class="section-title mb-5 animated-text-delay">Featured Recipes</h2>
+    <div class="row">
+        @foreach (var feature in featuredRecipes)
+        {
+            <div class="col-md-4 col-sm-6 mb-4 animated-card">
+                <div class="card shadow-sm border-0">
+                    <img class="card-img-top recipe-image" src="@feature.Image" alt="@feature.Title" />
+                    <div class="card-body">
+                        <i class="@feature.Icon fa-3x text-danger mb-3 animated-icon"></i>
+                        <h5 class="card-title font-weight-bold">@feature.Title</h5>
+                        <p class="card-text">@feature.Description</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Icons Section for Features like Recipe Submission, Community -->
+<div class="container my-5">
+    <div class="row text-center">
+        @foreach (var feature in features)
+        {
+            <div class="col-md-3 col-sm-6 mb-4 animated-card">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <i class="@feature.Icon fa-3x text-danger mb-3 animated-icon"></i>
+                        <h5 class="card-title font-weight-bold">@feature.Title</h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<style>
+    /* Overlay Styling */
+    .overlay {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Overlay Image Styling */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .overlay-image {
+        border-radius: 15px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        max-width: 100%;
+        height: auto;
+        animation: fadeIn 1s ease-in forwards;
+    }
+
+    /* Animating Hero Section */
+    @@keyframes fadeUp {
+        from {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .hero-text .animated-text {
+        animation: fadeUp 1s ease-in-out forwards;
+    }
+
+    .hero-text .animated-text-delay {
+        animation: fadeUp 1.5s ease-in-out forwards;
+    }
+
+    /* Button Animation */
+    .animated-button {
+        animation: fadeUp 2s ease-in-out forwards;
+        transition: all 0.3s ease;
+    }
+
+    .animated-button:hover {
+        background-color: white;
+        color: #b6542d;
+        border: 1px solid #b6542d;
+    }
+
+    /* Card Animation */
+    .animated-card {
+        animation: fadeUp 1s ease-in-out forwards;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .card-title {
+        color: #b6542d;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Icon Animation */
+    @@keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .animated-icon {
+        animation: bounce 2s infinite;
+    }
+
+    /* Custom Button Styling */
+    .btn {
+        background-color: #b6542d;
+        color: white;
+        font-family: 'Georgia', serif;
+        border-radius: 0.25rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: white;
+        color: #b6542d;
+        border: 1px solid #b6542d;
+    }
+
+    /* Hero Section Custom Padding */
+    .container-fluid .row {
+        padding: 50px 0;
+    }
+
+    /* Text Content Padding */
+    .pl-md-5 {
+        padding-left: 60px;
+    }
+
+    /* Recipe Image Styling */
+    .recipe-image {
+        max-height: 200px;
+        object-fit: cover;
+    }
+
+    .fas {
+        color: #b6542d !important;
+    }
+    @@media (max-width: 768px) {
+        .pl-md-5 {
+            padding-left: 20px;
+        }
+    }
+</style>
+
+@code {
+    private List<Feature> features = new List<Feature>
+    {
+        new Feature { Icon = "fas fa-utensils", Title = "Submit Your Recipes" },
+        new Feature { Icon = "fas fa-comments", Title = "Join the Community" },
+        new Feature { Icon = "fas fa-search", Title = "Explore Recipes" },
+        new Feature { Icon = "fas fa-book", Title = "Save Your Favorites" }
+    };
+
+    private List<FeaturedRecipe> featuredRecipes = new List<FeaturedRecipe>
+    {
+        new FeaturedRecipe { Icon = "fas fa-pizza-slice", Title = "Pizza Margherita", Description = "A delicious classic Italian pizza.", Image = "/Images/pizza2.jfif" },
+        new FeaturedRecipe { Icon = "fas fa-hamburger", Title = "Ultimate Burger", Description = "Juicy beef burger with all the fixings.", Image = "/Images/burger.jfif" },
+        new FeaturedRecipe { Icon = "fas fa-ice-cream", Title = "Homemade Ice Cream", Description = "A creamy and easy-to-make dessert.", Image = "/Images/icecream.jfif" }
+    };
+
+    public class Feature
+    {
+        public string Icon { get; set; }
+        public string Title { get; set; }
+    }
+
+    public class FeaturedRecipe
+    {
+        public string Icon { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Image { get; set; }
+    }
+}

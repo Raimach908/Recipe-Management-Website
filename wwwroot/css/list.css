@@ -1,0 +1,22 @@
+﻿body {
+    background-color: white; /* White background */
+    font-family: 'Georgia', serif; /* Apply Georgia to headings */
+}
+h3 {
+    font-size: 40px;
+    font-style: italic;
+    font-weight: bold;
+    padding: 20px;
+    background-size: cover;
+    background-position: center;
+    color: #b6542d;
+    text-shadow: 1px 1px 2px black;
+}
+
+.text-danger {
+    color: black; /* Red color for "No recipes found" text */
+}
+
+.container {
+    background-color: white; /* White background for container */
+}

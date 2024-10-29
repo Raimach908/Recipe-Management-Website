@@ -1,0 +1,77 @@
+﻿@page "/recipeList"
+@using RecipeManagementApp.Data
+@using RecipeManagementApp.Services
+
+@inject RecipeService RecipeService
+
+<!-- Search and Category Filter UI -->
+<div class="container mt-4 justify-content-center" style="padding:7px; margin-bottom: 14px">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input id="searchInput" type="text" @bind="SearchText" class="form-control" placeholder="Search by name..." />
+        </div>
+        <div class="col-md-4">
+            <select @onchange="CategoryChanged" class="form-select">
+                <option value="">All Categories</option>
+                <option value="Breakfast">Breakfast</option>
+                <option value="Lunch">Lunch</option>
+                <option value="Dinner">Dinner</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button id="searchbtn" @onclick="SearchClicked" class="btn" style="background-color: #28a745; border-color: #28a745; color: white; font-weight: bold;">Search</button>
+        </div>
+    </div>
+</div>
+
+<ListTemplate Items="filteredItems" Template="RenderRecipeCard"></ListTemplate>
+
+<link href="css/list.css" rel="stylesheet" />
+
+@code {
+    private List<Recipe> items;
+    private List<Recipe> filteredItems;
+    private string SearchText = string.Empty;
+    private string SelectedCategory = string.Empty;
+
+    // Load all recipes on page initialization
+    protected override async Task OnInitializedAsync()
+    {
+        items = RecipeService.GetAllRecipes();
+        filteredItems = items;
+    }
+
+    // Called when the search button is clicked
+    private void SearchClicked()
+    {
+        FilterRecipes();
+    }
+
+    // Called when the category dropdown changes
+    private void CategoryChanged(ChangeEventArgs e)
+    {
+        SelectedCategory = e.Value.ToString();
+        FilterRecipes();
+    }
+
+    // Filter the recipes based on search text and category
+    private void FilterRecipes()
+    {
+        filteredItems = items.Where(r =>
+    (string.IsNullOrWhiteSpace(SearchText) || r.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) &&
+    (string.IsNullOrWhiteSpace(SelectedCategory) || r.Category.Equals(SelectedCategory, StringComparison.OrdinalIgnoreCase))
+        ).ToList();
+    }
+
+    // Render the recipe card for each recipe
+    private RenderFragment<Recipe> RenderRecipeCard => recipe => @<div class="col-md-4 mb-4">
+        <RecipeCard recipe="recipe" OnDelete="HandleDeleteRecipe"></RecipeCard> <!-- Pass the OnDelete event -->
+    </div>;
+
+    // Handle recipe deletion
+    private void HandleDeleteRecipe(Recipe recipe)
+    {
+        items.Remove(recipe); // Remove the recipe from the list
+        FilterRecipes(); // Refresh the filtered list
+    }
+}

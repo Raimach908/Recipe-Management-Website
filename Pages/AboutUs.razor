@@ -1,0 +1,116 @@
+﻿@page "/about"
+@using Microsoft.AspNetCore.Components
+
+<PageTitle>About Us</PageTitle>
+
+<style>
+    .custom-container {
+        margin-bottom: 20px;
+    }
+
+</style>
+<div class="container mt-5 p-4 custom-container" style="background-color: rgba(255, 255, 255, 0.8); border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <div class="row justify-content-center text-center">
+        <div class="col-lg-8">
+            <h1 class="display-4" style="font-family: 'Georgia', serif; font-weight: bold; color: #b6542d;">
+                About RecipeVault
+            </h1>
+            <p class="lead mt-4" style="font-family: 'Georgia', serif; color: #333;">
+                Welcome to RecipeVault, where culinary creativity meets convenience. Our mission is to bring people together through food, by sharing recipes from around the world. Whether you're a beginner or a seasoned chef, we offer a platform for you to explore, create, and share delicious recipes.
+            </p>
+        </div>
+    </div>
+    <div class="row text-center mt-5">
+        <div class="col-md-4">
+            <img src="/Images/community.jfif" class="img-fluid rounded-circle" alt="Community" style="max-width: 180px; height:160px;">
+            <h3 class="mt-3" style="font-family: 'Georgia', serif; color: #b6542d;">Our Community</h3>
+            <p style="color: #333;">We foster a community where food enthusiasts can connect, share, and learn from each other.</p>
+        </div>
+        <div class="col-md-4">
+            <img src="/Images/recipes.jfif" class="img-fluid rounded-circle" alt="Recipes" style="max-width: 180px;height:160px;">
+            <h3 class="mt-3" style="font-family: 'Georgia', serif; color: #b6542d;">Explore Recipes</h3>
+            <p style="color: #333;">Discover thousands of recipes curated by our community, from appetizers to desserts.</p>
+        </div>
+        <div class="col-md-4">
+            <img src="/Images/mission.jfif" class="img-fluid rounded-circle" alt="Mission" style="max-width: 180px;height:160px;">
+            <h3 class="mt-3" style="font-family: 'Georgia', serif; color: #b6542d;">Our Mission</h3>
+            <p style="color: #333;">We aim to make cooking easy and fun, with accessible recipes and tools for every home chef.</p>
+        </div>
+    </div>
+
+    <!-- Core Values Section -->
+    <div class="mt-5">
+        <h2 class="text-center" style="font-family: 'Georgia', serif; color: #b6542d;">Our Core Values</h2>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <h5 style="color: #b6542d;">Inclusivity</h5>
+                <p style="color: #333;">We believe that cooking is for everyone, regardless of skill level or background.</p>
+            </div>
+            <div class="col-md-4">
+                <h5 style="color: #b6542d;">Sustainability</h5>
+                <p style="color: #333;">We promote sustainable cooking practices to protect our planet.</p>
+            </div>
+            <div class="col-md-4">
+                <h5 style="color: #b6542d;">Creativity</h5>
+                <p style="color: #333;">We encourage culinary creativity, inspiring chefs to experiment and innovate.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meet the Team Section -->
+    <div class="mt-5">
+        <h2 class="text-center" style="font-family: 'Georgia', serif; color: #b6542d;">Meet the Team</h2>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <img src="/Images/team1.jfif" class="img-fluid rounded-circle" alt="Team Member 1" style="max-width: 180px; height: 180px;">
+                <h5 class="mt-3" style="color: #b6542d;">John Doe</h5>
+                <p style="color: #333;">Founder & Chef. Passionate about bringing flavors to life.</p>
+            </div>
+            <div class="col-md-4">
+                <img src="/Images/team2.jfif" class="img-fluid rounded-circle" alt="Team Member 2" style="max-width: 180px; height: 180px;">
+                <h5 class="mt-3" style="color: #b6542d;">Jane Smith</h5>
+                <p style="color: #333;">Recipe Curator. Loves creating easy and delicious recipes.</p>
+            </div>
+            <div class="col-md-4">
+                <img src="/Images/team3.jfif" class="img-fluid rounded-circle" alt="Team Member 3" style="max-width: 180px; height: 180px;">
+                <h5 class="mt-3" style="color: #b6542d;">Emily Johnson</h5>
+                <p style="color: #333;">Community Manager. Engages with our food-loving community.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Testimonials Section -->
+    <div class="mt-5">
+        <h2 class="text-center" style="font-family: 'Georgia', serif; color: #b6542d;">What Our Users Say</h2>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <blockquote class="blockquote text-center" style="color: #333;">
+                    <p class="mb-0">"RecipeVault has transformed the way I cook! The community is so supportive and the recipes are amazing!"</p>
+                   <br />
+                    <footer class="blockquote-footer" style="color: #b6542d;">Sarah K.</footer>
+                </blockquote>
+            </div>
+            <div class="col-md-4">
+                <blockquote class="blockquote text-center" style="color: #333;">
+                    <p class="mb-0">"I love how easy it is to find new recipes! My family has loved everything I've made from RecipeVault."</p>
+                    <br />
+                    <footer class="blockquote-footer" style="color: #b6542d;">Mike R.</footer>
+                </blockquote>
+            </div>
+            <div class="col-md-4">
+                <blockquote class="blockquote text-center" style="color: #333;">
+                    <p class="mb-0">"The variety of recipes available is incredible. I can always find something new to try!"</p>
+                    <br />
+                    <footer class="blockquote-footer" style="color: #b6542d;">Emily T.</footer>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action Section -->
+    <div class="mt-5 text-center">
+        <h2 style="font-family: 'Georgia', serif; color: #b6542d;">Join Us Today!</h2>
+        <p style="color: #333;">Become a part of our growing community of food lovers. Share your recipes, discover new ones, and enhance your culinary skills.</p>
+        <a href="/signup" class="btn btn-lg" style="background-color: #b6542d; color: white;">Sign Up Now</a>
+    </div>
+</div>

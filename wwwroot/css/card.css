@@ -1,0 +1,96 @@
+﻿/* General Body Styles */
+body {
+    background-color: white; /* White background */
+    color: #343a40; /* Darker text color for contrast */
+    font-family: 'Georgia', serif; /* Apply Georgia to headings */
+}
+
+h3 {
+    font-size: 40px;
+    font-style: italic;
+    font-weight: bold;
+    padding: 20px;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+}
+
+#delbtn {
+    background-color: #b6542d; /* Red background for the button */
+    font-weight: bold; /* Bold text */
+    color: white; /* White text color for better contrast */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Add padding for better size */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+    #delbtn:hover {
+        background-color: darkred; /* Darker red on hover */
+    }
+
+/* Button Styles */
+.btn-add-recipe {
+    background-color: #b6542d; 
+    border: none; /* Remove border */
+    color: white; /* White text color */
+    padding: 10px 20px; /* Padding for button */
+    border-radius: 5px; /* Rounded corners */
+    font-size: small; /* Small font size */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+    .btn-add-recipe:hover {
+        background-color: darkred; /* Darker red on hover */
+    }
+
+/* Recipe Card Styles */
+.recipe-card {
+    border: 1px solid #e0e0e0; /* Light border for recipe cards */
+    border-radius: 0.5rem; /* Rounded corners */
+    background-color: white; /* White background for recipe cards */
+    padding: 15px;
+    transition: box-shadow 0.3s; /* Smooth shadow on hover */
+    height: 100%; /* Ensures cards are the same height */
+}
+
+    .recipe-card:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Shadow effect on hover */
+    }
+
+/* Image Styles */
+.recipe-image {
+    height: 200px; /* Set a fixed height for images */
+    object-fit: cover; /* Maintain aspect ratio */
+}
+
+/* Card Header and Footer Styles */
+.card-header {
+    background-color: #b6542d; /* Red background for the header */
+    color: white; /* White text for the header */
+    border-bottom: 1px solid #e0e0e0; /* Border below the header */
+}
+
+.card-footer {
+    background-color: #28a745;
+    border-top: 1px solid #e0e0e0; 
+    color:white;
+}
+#searchbtn {
+    border-color: #28a745;
+    background-color: #28a745;
+    text-align: center;
+    color: white;
+}
+
+/* Centered Text Styles */
+.text-center {
+    margin-top: 20px; /* Add some space for better alignment */
+}
+
+/* Add additional spacing */
+.mb-4 {
+    margin-bottom: 1.5rem; /* Add space below elements */
+}

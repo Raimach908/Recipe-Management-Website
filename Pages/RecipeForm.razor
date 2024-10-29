@@ -1,0 +1,173 @@
+﻿@page "/recipeForm/{id:int?}"
+@using RecipeManagementApp.Data
+@inject RecipeService RecipeService
+@inject NavigationManager NavigationManager
+
+<h3 id="form" class="text-center mt-5" style="font-family: 'Georgia', serif;">
+    @((recipe?.Id == 0 ? "Add New Recipe" : "Edit Recipe"))
+</h3>
+
+<div class="container mt-5" style="font-family: 'Georgia', serif;">
+    <div class="row justify-content-center">
+        <div class="d-flex justify-content-center align-items-center">
+            <EditForm Model="@recipe" OnValidSubmit="@HandleValidSubmit" class="p-4 border rounded shadow-sm" style="background-color: #8B171A; color: white; width: 499px;">
+                <ValidationSummary class="text-danger mb-3" />
+
+                <div class="form-group mb-3">
+                    <label for="recipeName" class="form-label">Name:</label>
+                    <InputText id="recipeName" class="form-control form-control-red" @bind-Value="recipe.Name" />
+                    @if (!string.IsNullOrEmpty(nameError))
+                    {
+                        <span class="text-danger">@nameError</span>
+                    }
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="recipeImage" class="form-label">Image URL:</label>
+                    <InputText id="recipeImage" class="form-control form-control-red" @bind-Value="recipe.ImageUrl" />
+                    @if (!string.IsNullOrEmpty(imageError))
+                    {
+                        <span class="text-danger">@imageError</span>
+                    }
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="recipeDescription" class="form-label ">Description:</label>
+                    <InputTextArea id="recipeDescription" class="form-control form-control-red" @bind-Value="recipe.Description" rows="3" />
+                    @if (!string.IsNullOrEmpty(descriptionError))
+                    {
+                        <span class="text-danger">@descriptionError</span>
+                    }
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="recipeCategory" class="form-label">Category (comma-separated):</label>
+                    <InputText id="recipeCategory" class="form-control form-control-red" @bind-Value="recipe.Category" />
+                    @if (!string.IsNullOrEmpty(categoryError))
+                    {
+                        <span class="text-danger">@categoryError</span>
+                    }
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="recipeIngredients" class="form-label ">Ingredients (comma-separated):</label>
+                    <InputText id="recipeIngredients" class="form-control form-control-red" @bind-Value="ingredientsInput" />
+                    @if (!string.IsNullOrEmpty(ingredientsError))
+                    {
+                        <span class="text-danger">@ingredientsError</span>
+                    }
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="recipeInstructions" class="form-label ">Instructions:</label>
+                    <InputTextArea id="recipeInstructions" class="form-control form-control-red" @bind-Value="recipe.Instructions" rows="5" />
+                    @if (!string.IsNullOrEmpty(instructionsError))
+                    {
+                        <span class="text-danger">@instructionsError</span>
+                    }
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-danger w-25" style="font-weight: bold;">
+                        @((recipe?.Id == 0) ? "Add Recipe" : "Update Recipe")
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+<link href="css/form.css" rel="stylesheet" />
+@code {
+    [Parameter] public int? id { get; set; }
+    public Recipe recipe = new Recipe();
+    private string ingredientsInput;
+
+    private string nameError;
+    private string imageError;
+    private string descriptionError;
+    private string categoryError;
+    private string ingredientsError;
+    private string instructionsError;
+
+    protected override void OnInitialized()
+    {
+        if (id.HasValue && id.Value > 0)
+        {
+            recipe = RecipeService.GetRecipeById(id.Value);
+            ingredientsInput = string.Join(", ", recipe.Ingredients);
+        }
+        else
+        {
+            recipe = new Recipe();
+        }
+    }
+
+    private void HandleValidSubmit()
+    {
+        // Reset error messages
+        ResetErrorMessages();
+
+        // Validate inputs
+        ValidateInputs();
+
+        if (string.IsNullOrEmpty(nameError) &&
+            string.IsNullOrEmpty(imageError) &&
+            string.IsNullOrEmpty(descriptionError) &&
+            string.IsNullOrEmpty(categoryError) &&
+            string.IsNullOrEmpty(ingredientsError) &&
+            string.IsNullOrEmpty(instructionsError))
+        {
+            // Proceed to add or update the recipe
+            recipe.Ingredients = ingredientsInput.Split(',').Select(i => i.Trim()).ToList();
+
+            if (recipe.Id == 0)
+            {
+                RecipeService.AddRecipe(recipe);
+            }
+            else
+            {
+                RecipeService.UpdateRecipe(recipe);
+            }
+
+            NavigationManager.NavigateTo("/recipeList");
+        }
+    }
+
+    private void ValidateInputs()
+    {
+        if (string.IsNullOrWhiteSpace(recipe.Name))
+        {
+            nameError = "Recipe name is required.";
+        }
+        if (string.IsNullOrWhiteSpace(recipe.ImageUrl))
+        {
+            imageError = "Image URL is required.";
+        }
+        if (string.IsNullOrWhiteSpace(recipe.Description))
+        {
+            descriptionError = "Description is required.";
+        }
+        if (string.IsNullOrWhiteSpace(recipe.Category))
+        {
+            categoryError = "Category is required.";
+        }
+        if (string.IsNullOrWhiteSpace(ingredientsInput))
+        {
+            ingredientsError = "Ingredients are required.";
+        }
+        if (string.IsNullOrWhiteSpace(recipe.Instructions))
+        {
+            instructionsError = "Instructions are required.";
+        }
+    }
+
+    private void ResetErrorMessages()
+    {
+        nameError = null;
+        imageError = null;
+        descriptionError = null;
+        categoryError = null;
+        ingredientsError = null;
+        instructionsError = null;
+    }
+}
