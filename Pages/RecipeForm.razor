@@ -3,28 +3,29 @@
 @inject RecipeService RecipeService
 @inject NavigationManager NavigationManager
 
-<h3 id="form" class="text-center mt-5" style="font-family: 'Georgia', serif;">
+<h3 id="form" class="text-center mt-5">
     @((recipe?.Id == 0 ? "Add New Recipe" : "Edit Recipe"))
 </h3>
 
-<div class="container mt-5" style="font-family: 'Georgia', serif;">
+<div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="d-flex justify-content-center align-items-center">
-            <EditForm Model="@recipe" OnValidSubmit="@HandleValidSubmit" class="p-4 border rounded shadow-sm" style="background-color: #8B171A; color: white; width: 499px;">
+        <div class="col-12 d-flex justify-content-center" style="width: 600px;">
+            <EditForm Model="@recipe" OnValidSubmit="@HandleValidSubmit" class="p-4 border rounded shadow-sm recipe-form" style="width: 540px;">
                 <ValidationSummary class="text-danger mb-3" />
 
                 <div class="form-group mb-3">
                     <label for="recipeName" class="form-label">Name:</label>
-                    <InputText id="recipeName" class="form-control form-control-red" @bind-Value="recipe.Name" />
+                    <InputText id="recipeName" class="form-control" @bind-Value="recipe.Name" />
                     @if (!string.IsNullOrEmpty(nameError))
                     {
                         <span class="text-danger">@nameError</span>
                     }
                 </div>
 
+                <!-- File Upload for Image -->
                 <div class="form-group mb-3">
-                    <label for="recipeImage" class="form-label">Image URL:</label>
-                    <InputText id="recipeImage" class="form-control form-control-red" @bind-Value="recipe.ImageUrl" />
+                    <label for="recipeImage" class="form-label">Upload Image:</label>
+                    <InputFile OnChange="HandleImageUpload" class="form-control" />
                     @if (!string.IsNullOrEmpty(imageError))
                     {
                         <span class="text-danger">@imageError</span>
@@ -32,8 +33,8 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="recipeDescription" class="form-label ">Description:</label>
-                    <InputTextArea id="recipeDescription" class="form-control form-control-red" @bind-Value="recipe.Description" rows="3" />
+                    <label for="recipeDescription" class="form-label">Description:</label>
+                    <InputTextArea id="recipeDescription" class="form-control" @bind-Value="recipe.Description" rows="3" />
                     @if (!string.IsNullOrEmpty(descriptionError))
                     {
                         <span class="text-danger">@descriptionError</span>
@@ -42,7 +43,7 @@
 
                 <div class="form-group mb-3">
                     <label for="recipeCategory" class="form-label">Category (comma-separated):</label>
-                    <InputText id="recipeCategory" class="form-control form-control-red" @bind-Value="recipe.Category" />
+                    <InputText id="recipeCategory" class="form-control" @bind-Value="recipe.Category" />
                     @if (!string.IsNullOrEmpty(categoryError))
                     {
                         <span class="text-danger">@categoryError</span>
@@ -50,8 +51,8 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="recipeIngredients" class="form-label ">Ingredients (comma-separated):</label>
-                    <InputText id="recipeIngredients" class="form-control form-control-red" @bind-Value="ingredientsInput" />
+                    <label for="recipeIngredients" class="form-label">Ingredients (comma-separated):</label>
+                    <InputText id="recipeIngredients" class="form-control" @bind-Value="recipe.IngredientsString" />
                     @if (!string.IsNullOrEmpty(ingredientsError))
                     {
                         <span class="text-danger">@ingredientsError</span>
@@ -59,8 +60,8 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="recipeInstructions" class="form-label ">Instructions:</label>
-                    <InputTextArea id="recipeInstructions" class="form-control form-control-red" @bind-Value="recipe.Instructions" rows="5" />
+                    <label for="recipeInstructions" class="form-label">Instructions:</label>
+                    <InputTextArea id="recipeInstructions" class="form-control" @bind-Value="recipe.Instructions" rows="5" />
                     @if (!string.IsNullOrEmpty(instructionsError))
                     {
                         <span class="text-danger">@instructionsError</span>
@@ -76,11 +77,14 @@
         </div>
     </div>
 </div>
+
 <link href="css/form.css" rel="stylesheet" />
+
 @code {
     [Parameter] public int? id { get; set; }
     public Recipe recipe = new Recipe();
     private string ingredientsInput;
+    private IBrowserFile? imageFile; // Store the uploaded image file
 
     private string nameError;
     private string imageError;
@@ -94,11 +98,22 @@
         if (id.HasValue && id.Value > 0)
         {
             recipe = RecipeService.GetRecipeById(id.Value);
-            ingredientsInput = string.Join(", ", recipe.Ingredients);
+            
         }
         else
         {
             recipe = new Recipe();
+        }
+    }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        imageFile = e.File;
+        if (imageFile != null)
+        {
+            var buffer = new byte[imageFile.Size];
+            await imageFile.OpenReadStream().ReadAsync(buffer);
+            recipe.ImageData = buffer; // Store image data as byte array
         }
     }
 
@@ -111,14 +126,11 @@
         ValidateInputs();
 
         if (string.IsNullOrEmpty(nameError) &&
-            string.IsNullOrEmpty(imageError) &&
             string.IsNullOrEmpty(descriptionError) &&
             string.IsNullOrEmpty(categoryError) &&
             string.IsNullOrEmpty(ingredientsError) &&
             string.IsNullOrEmpty(instructionsError))
         {
-            // Proceed to add or update the recipe
-            recipe.Ingredients = ingredientsInput.Split(',').Select(i => i.Trim()).ToList();
 
             if (recipe.Id == 0)
             {
@@ -139,9 +151,9 @@
         {
             nameError = "Recipe name is required.";
         }
-        if (string.IsNullOrWhiteSpace(recipe.ImageUrl))
+        if (recipe.ImageData == null || recipe.ImageData.Length == 0)
         {
-            imageError = "Image URL is required.";
+            imageError = "Image is required.";
         }
         if (string.IsNullOrWhiteSpace(recipe.Description))
         {
@@ -151,7 +163,7 @@
         {
             categoryError = "Category is required.";
         }
-        if (string.IsNullOrWhiteSpace(ingredientsInput))
+        if (string.IsNullOrWhiteSpace(recipe.IngredientsString))
         {
             ingredientsError = "Ingredients are required.";
         }

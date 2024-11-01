@@ -1,0 +1,27 @@
+﻿
+
+<div class="container my-5">
+    <div class="row text-center">
+        @foreach (var feature in Features)
+        {
+            <div class="col-md-3 col-sm-6 mb-4 animated-card">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <i class="@feature.Icon fa-3x mb-3 animated-icon"></i>
+                        <h5 class="card-title font-weight-bold">@feature.Title</h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<RecipeManagementApp.Data.Feature> Features { get; set; }
+
+    public class Feature
+    {
+        public string Icon { get; set; }
+        public string Title { get; set; }
+    }
+}

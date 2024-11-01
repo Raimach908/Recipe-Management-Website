@@ -1,8 +1,13 @@
 ﻿@page "/recipeList"
+
 @using RecipeManagementApp.Data
 @using RecipeManagementApp.Services
 
+@inject NavigationManager NavigationManager
 @inject RecipeService RecipeService
+
+<link href="css/list.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
 <!-- Search and Category Filter UI -->
 <div class="container mt-4 justify-content-center" style="padding:7px; margin-bottom: 14px">
@@ -16,17 +21,29 @@
                 <option value="Breakfast">Breakfast</option>
                 <option value="Lunch">Lunch</option>
                 <option value="Dinner">Dinner</option>
+                <option value="Dessert">Desserts</option>
+                <option value="Ice Cream">Ice Cream</option>
             </select>
         </div>
         <div class="col-md-2">
             <button id="searchbtn" @onclick="SearchClicked" class="btn" style="background-color: #28a745; border-color: #28a745; color: white; font-weight: bold;">Search</button>
         </div>
     </div>
+
+    <!-- Add Recipe Button -->
+    <div class="row">
+        <div class="col-md-12 text-end">
+            <!-- Changed to text-end for right alignment -->
+            <button id="addRecipeBtn" @onclick="AddRecipeClicked" class="btn" style="background-color: #28a745; border-color: #28a745; color: white; font-weight: bold;">
+                <i class="fas fa-plus"></i> Add Recipe <!-- Font Awesome icon -->
+            </button>
+        </div>
+    </div>
+
 </div>
 
 <ListTemplate Items="filteredItems" Template="RenderRecipeCard"></ListTemplate>
 
-<link href="css/list.css" rel="stylesheet" />
 
 @code {
     private List<Recipe> items;
@@ -66,12 +83,28 @@
     // Render the recipe card for each recipe
     private RenderFragment<Recipe> RenderRecipeCard => recipe => @<div class="col-md-4 mb-4">
         <RecipeCard recipe="recipe" OnDelete="HandleDeleteRecipe"></RecipeCard> <!-- Pass the OnDelete event -->
-    </div>;
+
+    </div>
+    ;
+
+    private void AddRecipeClicked()
+    {
+        if (NavigationManager != null)
+        {
+            NavigationManager.NavigateTo("/recipeForm");
+        }
+        else
+        {
+            Console.WriteLine("NavigationManager is null");
+        }
+    }
 
     // Handle recipe deletion
     private void HandleDeleteRecipe(Recipe recipe)
     {
-        items.Remove(recipe); // Remove the recipe from the list
+        RecipeService.DeleteRecipe(recipe.Id); // Delete the recipe from the database
+        items.Remove(recipe); // Remove the recipe from the local list
         FilterRecipes(); // Refresh the filtered list
     }
+
 }

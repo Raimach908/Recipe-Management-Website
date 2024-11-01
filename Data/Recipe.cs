@@ -4,13 +4,11 @@ namespace RecipeManagementApp.Data
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        public List<string> Ingredients { get; set; }
         public string? Instructions { get; set; }
         public string? Category { get; set; }
+        public string? IngredientsString { get; set; }
 
-        public string? ImageUrl { get; set; }
-
+        public byte[]? ImageData { get; set; } // Store the image as byte array
         public string? Description { get; set; }
-
     }
 }

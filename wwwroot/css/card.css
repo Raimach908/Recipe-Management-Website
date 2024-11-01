@@ -15,9 +15,18 @@ h3 {
     color: white;
     text-shadow: 1px 1px 2px black;
 }
-
-#delbtn {
+#editbtn {
     background-color: #b6542d; /* Red background for the button */
+    font-weight: bold; /* Bold text */
+    color: white; /* White text color for better contrast */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Add padding for better size */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+#delbtn {
+    background-color: firebrick;/* Red background for the button */
     font-weight: bold; /* Bold text */
     color: white; /* White text color for better contrast */
     border: none; /* Remove default border */

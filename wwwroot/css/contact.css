@@ -24,11 +24,13 @@
 
 .map-container {
     flex: 2;
-    min-width: 320px;
+    min-width: 390px;
+    width: 600px;
     border: 2px solid #b6542d;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    height: 300px;
 }
 
 /* Updated styling for the contact-info card */
@@ -40,6 +42,8 @@
     border: 2px solid #b6542d;
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    height: 300px;
+    margin-left: 100px;
 }
 
     /* Update the heading color for better contrast */

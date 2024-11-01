@@ -1,0 +1,39 @@
+﻿body {
+    background-color: white; /* Set the background to white */
+}
+
+.titles{
+    color: #b6542d;
+    font-weight: bold;
+}
+.menu-header {
+    color: #b6542d; /* Heading color */
+}
+
+.category-icon {
+    color: #b6542d; /* Icon color */
+}
+
+.card {
+    border: 1px solid #b6542d; /* Card border color */
+    border-radius: 0.5rem; /* Slightly rounded corners */
+    transition: transform 0.2s; /* Animation on hover */
+}
+
+    .card:hover {
+        transform: scale(1.05); /* Scale card on hover */
+    }
+
+.card-title {
+    color: #b6542d; /* Card title color */
+}
+
+.text-success {
+    color: #b6542d; /* Use the specified color for success */
+}
+
+.menu-section {
+    border-top: 2px solid #b6542d; /* Border for sections */
+    padding-top: 20px; /* Padding for sections */
+    margin-top: 20px; /* Margin for sections */
+}

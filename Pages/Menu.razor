@@ -1,290 +1,51 @@
 ﻿@page "/menu"
 
+
+@inject NavigationManager NavigationManager
+@inject RecipeService RecipeService
+
+<!-- Add CSS and Bootstrap Links -->
+<link rel="stylesheet" href="css/menu.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<style>
-    body {
-        background-color: white; /* Set the background to white */
-    }
-
-    .menu-header {
-        color: #b6542d; /* Heading color */
-    }
-
-    .category-icon {
-        color: #b6542d; /* Icon color */
-    }
-
-    .card {
-        border: 1px solid #b6542d; /* Card border color */
-        border-radius: 0.5rem; /* Slightly rounded corners */
-        transition: transform 0.2s; /* Animation on hover */
-    }
-
-        .card:hover {
-            transform: scale(1.05); /* Scale card on hover */
-        }
-
-    .card-title {
-        color: #b6542d; /* Card title color */
-    }
-
-    .text-success {
-        color: #b6542d; /* Use the specified color for success */
-    }
-
-    .menu-section {
-        border-top: 2px solid #b6542d; /* Border for sections */
-        padding-top: 20px; /* Padding for sections */
-        margin-top: 20px; /* Margin for sections */
-    }
-</style>
-
 <div class="container mt-4">
-    <!-- Menu Heading -->
     <div class="text-center">
         <h1 class="menu-header">Menu</h1>
     </div>
-
-    <!-- Category Menu Section -->
-    <div class="row justify-content-center">
-        <div class="col-md-2 text-center">
-            <i class="fa fa-coffee fa-2x category-icon"></i>
-            <h5>Breakfast</h5>
-        </div>
-        <div class="col-md-2 text-center">
-            <i class="fa fa-hamburger fa-2x category-icon"></i>
-            <h5>Lunch</h5>
-        </div>
-        <div class="col-md-2 text-center">
-            <i class="fa fa-utensils fa-2x category-icon"></i>
-            <h5>Dinner</h5>
-        </div>
-        <div class="col-md-2 text-center">
-            <i class="fa fa-birthday-cake fa-2x category-icon"></i>
-            <h5>Desserts</h5>
-        </div>
-        <div class="col-md-2 text-center">
-            <i class="fa fa-ice-cream fa-2x category-icon"></i>
-            <h5>Ice Creams</h5>
-        </div>
-    </div>
+   
+    <!-- Category Section -->
+    <CategoryMenu />
 
     <hr />
 
-    <!-- Breakfast Section -->
-    <div class="menu-section">
-        <h3 class="text-success">Breakfast</h3>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/tomato_special_fry.jpg" class="card-img-top" alt="Tomato Special Fry">
-                    <div class="card-body">
-                        <h5 class="card-title">Tomato Special Fry</h5>
-                        <p class="card-text">$25.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/pancakes.jpg" class="card-img-top" alt="Pancakes">
-                    <div class="card-body">
-                        <h5 class="card-title">Pancakes</h5>
-                        <p class="card-text">$20.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/omelette.jpg" class="card-img-top" alt="Omelette">
-                    <div class="card-body">
-                        <h5 class="card-title">Omelette</h5>
-                        <p class="card-text">$18.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/fruit_salad.jpg" class="card-img-top" alt="Fruit Salad">
-                    <div class="card-body">
-                        <h5 class="card-title">Fruit Salad</h5>
-                        <p class="card-text">$15.00</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Lunch Section -->
-    <div class="menu-section">
-        <h3 class="text-success">Lunch</h3>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/chicken_salad.jpg" class="card-img-top" alt="Chicken Salad">
-                    <div class="card-body">
-                        <h5 class="card-title">Chicken Salad</h5>
-                        <p class="card-text">$12.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/burger.jpg" class="card-img-top" alt="Burger">
-                    <div class="card-body">
-                        <h5 class="card-title">Burger</h5>
-                        <p class="card-text">$10.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/pasta.jpg" class="card-img-top" alt="Pasta">
-                    <div class="card-body">
-                        <h5 class="card-title">Pasta</h5>
-                        <p class="card-text">$14.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/sushi.jpg" class="card-img-top" alt="Sushi">
-                    <div class="card-body">
-                        <h5 class="card-title">Sushi</h5>
-                        <p class="card-text">$18.00</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Dinner Section -->
-    <div class="menu-section">
-        <h3 class="text-success">Dinner</h3>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/steak.jpg" class="card-img-top" alt="Steak">
-                    <div class="card-body">
-                        <h5 class="card-title">Steak</h5>
-                        <p class="card-text">$25.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/fish.jpg" class="card-img-top" alt="Grilled Fish">
-                    <div class="card-body">
-                        <h5 class="card-title">Grilled Fish</h5>
-                        <p class="card-text">$22.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/vegetable_stir_fry.jpg" class="card-img-top" alt="Vegetable Stir Fry">
-                    <div class="card-body">
-                        <h5 class="card-title">Vegetable Stir Fry</h5>
-                        <p class="card-text">$15.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/rice.jpg" class="card-img-top" alt="Fried Rice">
-                    <div class="card-body">
-                        <h5 class="card-title">Fried Rice</h5>
-                        <p class="card-text">$12.00</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Desserts Section -->
-    <div class="menu-section">
-        <h3 class="text-success">Desserts</h3>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/chocolate_cake.jpg" class="card-img-top" alt="Chocolate Cake">
-                    <div class="card-body">
-                        <h5 class="card-title">Chocolate Cake</h5>
-                        <p class="card-text">$8.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/ice_cream.jpg" class="card-img-top" alt="Ice Cream">
-                    <div class="card-body">
-                        <h5 class="card-title">Ice Cream</h5>
-                        <p class="card-text">$5.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/apple_pie.jpg" class="card-img-top" alt="Apple Pie">
-                    <div class="card-body">
-                        <h5 class="card-title">Apple Pie</h5>
-                        <p class="card-text">$6.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/cookie.jpg" class="card-img-top" alt="Cookie">
-                    <div class="card-body">
-                        <h5 class="card-title">Cookie</h5>
-                        <p class="card-text">$2.00</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Ice Creams Section -->
-    <div class="menu-section">
-        <h3 class="text-success">Ice Creams</h3>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/vanilla_ice_cream.jpg" class="card-img-top" alt="Vanilla Ice Cream">
-                    <div class="card-body">
-                        <h5 class="card-title">Vanilla Ice Cream</h5>
-                        <p class="card-text">$4.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/chocolate_ice_cream.jpg" class="card-img-top" alt="Chocolate Ice Cream">
-                    <div class="card-body">
-                        <h5 class="card-title">Chocolate Ice Cream</h5>
-                        <p class="card-text">$4.50</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/strawberry_ice_cream.jpg" class="card-img-top" alt="Strawberry Ice Cream">
-                    <div class="card-body">
-                        <h5 class="card-title">Strawberry Ice Cream</h5>
-                        <p class="card-text">$4.00</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="/Images/mint_ice_cream.jpg" class="card-img-top" alt="Mint Ice Cream">
-                    <div class="card-body">
-                        <h5 class="card-title">Mint Ice Cream</h5>
-                        <p class="card-text">$4.00</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Menu Sections for each Category -->
+    <h3 class="titles">BreakFast</h3>
+    <MenuSection TItem="Recipe"  Items="breakfastItems" />
+    <h3 class="titles">Lunch</h3>
+    <MenuSection TItem="Recipe"  Items="lunchItems" />
+    <h3 class="titles">Dinner</h3>
+    <MenuSection TItem="Recipe"  Items="dinnerItems" />
+    <h3 class="titles">Dessert</h3>
+    <MenuSection TItem="Recipe"  Items="dessertItems" />
+    <h3 class="titles">Ice Cream</h3>
+    <MenuSection TItem="Recipe"  Items="iceCreamItems" />
 </div>
+
+@code {
+    private List<Recipe> breakfastItems = new List<Recipe>();
+    private List<Recipe> lunchItems = new List<Recipe>();
+    private List<Recipe> dinnerItems = new List<Recipe>();
+    private List<Recipe> dessertItems = new List<Recipe>();
+    private List<Recipe> iceCreamItems = new List<Recipe>();
+
+    protected override void OnInitialized()
+    {
+        // Fetch recipes for each category during component initialization
+        breakfastItems = RecipeService.GetRecipesByCategory("BreakFast");
+        lunchItems = RecipeService.GetRecipesByCategory("Lunch");
+        dinnerItems = RecipeService.GetRecipesByCategory("Dinner");
+        dessertItems = RecipeService.GetRecipesByCategory("Dessert");
+        iceCreamItems = RecipeService.GetRecipesByCategory("Ice Cream");
+    }
+}

@@ -1,0 +1,78 @@
+﻿@typeparam TItem
+
+@inject NavigationManager navigationManager
+<div class="menu-section">
+    <div class="row justify-content-center">
+        @foreach (var item in Items)
+        {
+            if (item is Recipe menuItem)
+            {
+                <div class="col-md-3 mb-4 d-flex justify-content-center">
+                    <!-- Center the card in the column -->
+                    <div class="card h-100 text-center">
+                        <!-- Ensure the card takes full height -->
+                        <img src="data:image/png;base64,@Convert.ToBase64String(menuItem.ImageData)" class="card-img-top" alt="@menuItem.Name" />
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@menuItem.Name</h5>
+                            @* <p class="card-text">Price: @menuItem.Price.ToString("C")</p> *@
+                            <div class="mt-auto">
+                                <button class="btn btn-primary" @onclick="() => getDetails(menuItem.Id) ">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<TItem> Items { get; set; }
+    private void getDetails(int recipeId)
+    {
+        if (navigationManager != null)
+        {
+            navigationManager.NavigateTo($"/recipeDetails/{recipeId}");
+        }
+        else
+        {
+            Console.WriteLine("NavigationManager is null");
+        }
+    }
+}
+
+<style>
+    .menu-section {
+        background-color: white; /* Set the background color to white */
+        padding: 20px; /* Add padding around the menu section */
+    }
+
+        .menu-section .card {
+            height: 350px; /* Set a fixed height for each card */
+            width: 100%; /* Ensure card takes full width */
+            background-color: white; /* Ensure card background is white */
+            border: 1px solid #b6542d; /* Optional: add border with the specified color */
+        }
+
+        .menu-section .card-img-top {
+            height: 150px; /* Set a fixed height for images */
+            object-fit: cover; /* Ensure the image covers the area without distortion */
+        }
+
+        .menu-section .card-body {
+            display: flex; /* Use flexbox layout for card body */
+            flex-direction: column; /* Stack elements vertically */
+            flex-grow: 1; /* Allow the card body to take up available space */
+        }
+
+        .menu-section .btn {
+            background-color: #b6542d; /* Set button background color */
+            color: white; /* Set button text color */
+        }
+
+            .menu-section .btn:hover {
+                background-color: darken(#b6542d, 10%); /* Darken button on hover */
+            }
+
+</style>

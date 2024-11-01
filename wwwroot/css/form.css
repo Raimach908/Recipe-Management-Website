@@ -1,15 +1,46 @@
 ﻿/* General Styles */
 body {
-    background-color: #8B171A;
+    background-color: white; /* Set body background to white */
     font-family: 'Georgia', serif; /* Elegant font */
 }
+
 #form {
     font-size: 40px;
     font-style: italic;
     font-weight: bold;
     padding: 20px;
-    background-size: cover;
-    background-position: center;
-    color: white;
+    color: #b6542d; /* Change text color to dark red */
     text-shadow: 1px 1px 2px black;
 }
+.container {
+    max-width: 600px; /* Maximum width for larger screens */
+    width: 100%; /* Full width on smaller screens */
+    padding: 20px; /* Add some padding for aesthetics */
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px; /* Reduce padding on smaller screens */
+    }
+}
+
+.recipe-form {
+    background-color: #b6542d; /* Form background color */
+    color: white; /* Form text color */
+}
+
+.form-control {
+    background-color: white; /* Input fields background */
+    color: #8B171A; /* Input fields text color */
+}
+
+.btn-danger {
+    background-color: white; /* Button background */
+    border: none; /* Remove button border */
+    color: #b6542d;
+    width: 199px;
+}
+
+    .btn-danger:hover {
+        background-color: #8B171A; /* Darker shade on hover */
+    }

@@ -9,39 +9,50 @@
 </h3>
 
 <div class="container mt-4" style="font-family: 'Georgia', serif;">
-    <div class="recipe-form p-4 border rounded shadow-lg bg-white" style="max-width: 440px; margin: 0 auto;">
+    <div class="recipe-form p-4 border rounded shadow-lg bg-white" style="max-width: 440px; margin: 0 auto; background-color: white;">
         @if (id.HasValue)
         {
             recipe = RecipeService.GetRecipeById(id.Value);
             if (recipe != null)
             {
-                <h4 class="text-center text-danger mb-3" style="font-weight: bold;">@recipe.Name</h4>
+                <h4 class="text-center mb-3" style="font-weight: bold; color: #b6542d;">@recipe.Name</h4>
                 <div class="text-center mb-3">
-                    <img src="@recipe.ImageUrl" alt="@recipe.Name" class="img-fluid rounded shadow-sm " style="max-height: 300px; width: auto;" />
+                    <img src="data:image/png;base64,@Convert.ToBase64String(recipe.ImageData)" alt="@recipe.Name" class="card-img-top recipe-image" />
                 </div>
 
                 <div class="mb-3">
-                    <p><strong class="text-danger">Description:</strong></p>
+                    <p><strong style="color: #b6542d;">Description:</strong></p>
                     <p>@recipe.Description</p>
                 </div>
 
                 <div class="mb-3">
-                    <p><strong class="text-danger">Ingredients:</strong></p>
+                    <p><strong style="color: #b6542d;">Ingredients:</strong></p>
                     <ul class="list-styled">
-                        @foreach (var ingredient in recipe.Ingredients)
+                        @if (!string.IsNullOrEmpty(recipe.IngredientsString))
                         {
-                            <li>@ingredient</li>
+                            // Split the IngredientsString by commas and trim any extra whitespace
+                            var ingredients = recipe.IngredientsString.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(ingredient => ingredient.Trim());
+
+                            foreach (var ingredient in ingredients)
+                            {
+                                <li>@ingredient</li>
+                            }
+                        }
+                        else
+                        {
+                            <li>No ingredients available.</li>
                         }
                     </ul>
                 </div>
 
                 <div class="mb-4">
-                    <p><strong class="text-danger">Instructions:</strong></p>
+                    <p><strong style="color: #b6542d;">Instructions:</strong></p>
                     <p>@recipe.Instructions</p>
                 </div>
 
                 <div class="text-center">
-                    <button @onclick="EditForm" class="btn btn-danger w-50" style="font-weight: bold;">
+                    <button @onclick="EditForm" class="btn btn-danger w-50" style="background-color: #b6542d; color: white; font-weight: bold;">
                         Edit Recipe
                     </button>
                 </div>
@@ -54,16 +65,14 @@
         else
         {
             <div class="text-center">
-                <p>Please enter a Recipe ID to view details:</p>
+                <p style="color: #b6542d;">Please enter a Recipe ID to view details:</p>
                 <InputText id="recipeId" class="form-control form-control-red" @bind-Value="inputId" />
                 @if (!string.IsNullOrEmpty(validationMessage))
                 {
                     <div class="text-danger">@validationMessage</div>
                 }
-                <button @onclick="LoadRecipe" class="btn btn-danger mt-2">Load Recipe</button>
+                <button @onclick="LoadRecipe" class="btn btn-danger mt-2" style="background-color: #b6542d; color: white;">Load Recipe</button>
             </div>
-
-
         }
     </div>
 </div>
@@ -89,7 +98,7 @@
         else
         {
             // Optionally, show an error message for invalid input
-            inputId = string.Empty; 
+            inputId = string.Empty;
             // Set validation message for invalid input
             validationMessage = "Please enter a valid Recipe ID (greater than 0).";
         }

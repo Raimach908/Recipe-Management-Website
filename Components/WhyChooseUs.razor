@@ -1,0 +1,25 @@
+﻿
+<section class="why-choose-us text-center" style="background-color: #f5f5f5; padding: 50px 0;">
+    <h2 style="color: #b6542d; font-weight: bold;">Why Choose Recipe Vault?</h2>
+    <div class="row justify-content-center mt-4">
+        @foreach (var card in whyChooseCards)
+        {
+            <WhyChooseCard Title="@card.Title" Description="@card.Description" />
+        }
+    </div>
+</section>
+
+@code {
+    private List<WhyChoose> whyChooseCards = new List<WhyChoose>
+    {
+        new WhyChoose { Title = "Expert Curated Recipes", Description = "Our recipes are curated by culinary experts, ensuring you get the best quality content every time." },
+        new WhyChoose { Title = "Interactive and Easy to Use", Description = "Our platform is designed to be simple and interactive, making it accessible to everyone." },
+        new WhyChoose { Title = "Constant Updates", Description = "Enjoy regular updates with new recipes, tips, and cooking hacks from the best in the industry." },
+    };
+
+    public class WhyChoose
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+    }
+}

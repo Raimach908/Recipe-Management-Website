@@ -6,7 +6,7 @@
 }
 
 .features-container {
-    max-width: 1200px;
+    max-width: 1300px;
     padding: 40px;
     font-family: 'Georgia', serif; /* Font style */
     border-radius: 6px; /* Optional: Rounded corners for the container */
@@ -17,6 +17,10 @@ h2 {
     color: #b6542d; /* Primary color */
     margin-bottom: 40px; /* Spacing below the heading */
     font-weight: bold; /* Bold text */
+}
+
+.why-choose-section {
+
 }
 
 .feature-row {

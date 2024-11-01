@@ -14,8 +14,12 @@ namespace RecipeManagementApp
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
-            // Registering the RecipeService
-            builder.Services.AddSingleton<RecipeService>();
+
+            // Get connection string from configuration
+            string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            // Registering the RecipeService with the connection string
+            builder.Services.AddSingleton<RecipeService>(sp => new RecipeService(connectionString));
 
             var app = builder.Build();
 
@@ -28,9 +32,7 @@ namespace RecipeManagementApp
             }
 
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.MapBlazorHub();

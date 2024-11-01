@@ -1,0 +1,34 @@
+﻿
+
+<div class="container my-5 text-center">
+    <h2 class="section-title mb-5 animated-text-delay">Featured Recipes</h2>
+    <div class="row">
+        @foreach (var recipe in featuredRecipes)
+        {
+            <div class="col-md-4 col-sm-6 mb-4 animated-card">
+                <div class="card shadow-sm border-0">
+                    <img class="card-img-top recipe-image" src="@recipe.Image" alt="@recipe.Title" />
+                    <div class="card-body">
+                        <i class="@recipe.Icon fa-3x mb-3 animated-icon"></i>
+                        <h5 class="card-title font-weight-bold">@recipe.Title</h5>
+                        <p class="card-text">@recipe.Description</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter] public List<RecipeManagementApp.Data.FeaturedRecipe> featuredRecipes { get; set; }
+
+
+    public class FeaturedRecipe
+    {
+        public string Icon { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Image { get; set; }
+    }
+}
