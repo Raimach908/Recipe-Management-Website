@@ -1,0 +1,41 @@
+﻿@inject NavigationManager NavigationManager
+@inject SessionService SessionService
+
+<div class="row justify-content-center">
+    <div class="col-md-6"> <br />
+        <h2 class="text-center" style="color: #b6542d; font-weight: bold;">Choose Your Role</h2>
+        <p class="text-center mb-4">Please select whether you are an Admin or a User to proceed.</p>
+        <div class="text-center">
+            <button class="btn btn-primary btn-lg me-3" style="background-color: #b6542d;" @onclick="SelectAdmin">
+                Admin
+            </button>
+            <button class="btn btn-success btn-lg" style="background-color: #28a745;" @onclick="GoToUserLogin">
+                User
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnAdminSelected { get; set; }
+
+    private async Task SelectAdmin()
+    {
+        await OnAdminSelected.InvokeAsync();
+    }
+
+    private async Task GoToUserLogin()
+    {
+        var sessionUser = await SessionService.GetSession<User>("LoggedInUser");
+
+        if (sessionUser != null)
+        {
+            NavigationManager.NavigateTo("/recipeListUser");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}

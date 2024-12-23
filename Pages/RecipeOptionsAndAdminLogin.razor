@@ -1,0 +1,16 @@
+﻿@page "/recipeOptions"
+
+<RoleSelection OnAdminSelected="ShowAdminLoginHandler" />
+@if (ShowAdminLogin)
+{
+    <AdminLogin />
+}
+
+@code {
+    private bool ShowAdminLogin = false;
+
+    private void ShowAdminLoginHandler()
+    {
+        ShowAdminLogin = true;
+    }
+}

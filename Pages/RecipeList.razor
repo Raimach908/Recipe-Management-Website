@@ -5,6 +5,7 @@
 
 @inject NavigationManager NavigationManager
 @inject RecipeService RecipeService
+@inject SessionService SessionService
 
 <link href="css/list.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
@@ -39,11 +40,9 @@
             </button>
         </div>
     </div>
-
 </div>
 
 <ListTemplate Items="filteredItems" Template="RenderRecipeCard"></ListTemplate>
-
 
 @code {
     private List<Recipe> items;
@@ -75,30 +74,39 @@
     private void FilterRecipes()
     {
         filteredItems = items.Where(r =>
-    (string.IsNullOrWhiteSpace(SearchText) || r.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) &&
-    (string.IsNullOrWhiteSpace(SelectedCategory) || r.Category.Equals(SelectedCategory, StringComparison.OrdinalIgnoreCase))
-        ).ToList();
+        (string.IsNullOrWhiteSpace(SearchText) || r.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) &&
+        (string.IsNullOrWhiteSpace(SelectedCategory) || r.Category.Equals(SelectedCategory, StringComparison.OrdinalIgnoreCase))
+    ).ToList();
     }
 
     // Render the recipe card for each recipe
     private RenderFragment<Recipe> RenderRecipeCard => recipe => @<div class="col-md-4 mb-4">
         <RecipeCard recipe="recipe" OnDelete="HandleDeleteRecipe"></RecipeCard> <!-- Pass the OnDelete event -->
+    </div>;
 
-    </div>
-    ;
-
-    private void AddRecipeClicked()
+    private async Task AddRecipeClicked()
     {
-        if (NavigationManager != null)
+        if (SessionService == null)
         {
+            Console.WriteLine("SessionService is not initialized.");
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
+        // Check if the user is logged in
+        var sessionUser = await SessionService.GetSession<User>("LoggedInUser");
+
+        if (sessionUser != null)
+        {
+            // User is logged in, navigate to the recipe form
             NavigationManager.NavigateTo("/recipeForm");
         }
         else
         {
-            Console.WriteLine("NavigationManager is null");
+            // User is not logged in, redirect to login page
+            NavigationManager.NavigateTo("/login");
         }
     }
-
     // Handle recipe deletion
     private void HandleDeleteRecipe(Recipe recipe)
     {
@@ -106,5 +114,4 @@
         items.Remove(recipe); // Remove the recipe from the local list
         FilterRecipes(); // Refresh the filtered list
     }
-
 }

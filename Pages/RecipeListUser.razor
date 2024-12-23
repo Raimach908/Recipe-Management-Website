@@ -1,0 +1,47 @@
+﻿@page "/recipeListUser"
+@inject NavigationManager NavigationManager
+@inject RecipeService RecipeService
+@inject SessionService SessionService
+@using RecipeManagementApp.Data
+
+@if (sessionUser != null)
+{
+    <ListTemplate Items="filteredItems" Template="RenderRecipeCard"></ListTemplate>
+}
+else
+{
+    <p>Please log in to view recipes.</p>
+}
+
+@code {
+    private User sessionUser;
+    private List<Recipe> items = new();
+    private List<Recipe> filteredItems = new();
+    private string SearchText = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        sessionUser = await SessionService.GetSession<User>("LoggedInUser");
+
+        if (sessionUser == null)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            items = RecipeService.GetAllRecipes(); // Load recipes
+            filteredItems = items; // Default to show all recipes
+        }
+    }
+
+    private void FilterRecipes()
+    {
+        filteredItems = items.Where(r =>
+        string.IsNullOrWhiteSpace(SearchText) || r.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+        .ToList();
+    }
+
+    private RenderFragment<Recipe> RenderRecipeCard => recipe => @<div class="col-md-4 mb-4">
+        <RecipeCardUser recipe="recipe" />
+    </div>;
+}

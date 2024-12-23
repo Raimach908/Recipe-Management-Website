@@ -1,0 +1,64 @@
+﻿@page "/Cart"
+@inject CartService CartService
+@inject SessionService SessionService
+@inject NavigationManager NavigationManager
+
+<h2>Your Cart</h2>
+
+@if (cartItems != null && cartItems.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Recipe</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in cartItems)
+            {
+                <tr>
+                    <td>@item.RecipeName</td>
+                    <td>@item.Quantity</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => RemoveFromCart(item.RecipeId)">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Your cart is empty.</p>
+}
+
+@code {
+    private IEnumerable<CartItem> cartItems = new List<CartItem>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var sessionUser = await SessionService.GetSession<User>("LoggedInUser");
+
+        if (sessionUser != null)
+        {
+            cartItems = CartService.GetCartItems(sessionUser.Email);
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+
+    private void RemoveFromCart(int recipeId)
+    {
+        var sessionUser = SessionService.GetSession<User>("LoggedInUser").Result;
+
+        if (sessionUser != null)
+        {
+            CartService.RemoveFromCart(sessionUser.Email, recipeId);
+            cartItems = CartService.GetCartItems(sessionUser.Email); // Refresh cart items
+        }
+    }
+}

@@ -1,0 +1,149 @@
+﻿@page "/EditProfile/{userId:int}"
+@using RecipeManagementApp.Data
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<div class="edit-profile-background">
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="card shadow-lg border-0">
+            <div class="card-header text-center text-white">
+                <h3>Edit Profile</h3>
+            </div>
+            <div class="card-body">
+                @if (user != null)
+                {
+                    <EditForm Model="@user" OnValidSubmit="HandleEdit">
+                        <DataAnnotationsValidator />
+                        <div class="mb-3">
+                            <label for="Name" class="form-label">Name</label>
+                            <InputText id="Name" class="form-control" @bind-Value="user.Name" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="Email" class="form-label">Email</label>
+                            <InputText id="Email" class="form-control" @bind-Value="user.Email" disabled />
+                        </div>
+                        <div class="mb-3">
+                            <label for="PhoneNumber" class="form-label">Phone Number</label>
+                            <InputText id="PhoneNumber" class="form-control" @bind-Value="user.PhoneNumber" />
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary me-2">Save Changes</button>
+                            <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+                        </div>
+                    </EditForm>
+                }
+                else
+                {
+                    <div class="text-center text-danger">
+                        <p>User not found. Unable to edit the profile.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int userId { get; set; }
+
+    private User? user;
+
+    protected override void OnInitialized()
+    {
+        user = UserService.GetUserById(userId);
+        if (user == null)
+        {
+            Console.WriteLine("User not found for editing.");
+        }
+    }
+
+    private void HandleEdit()
+    {
+        if (user != null)
+        {
+            var result = UserService.UpdateUser(user);
+            if (result)
+            {
+                Console.WriteLine("Profile updated successfully.");
+                NavigationManager.NavigateTo("/profile");
+            }
+            else
+            {
+                Console.WriteLine("Failed to update the profile.");
+            }
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/profile");
+    }
+}
+
+<style>
+    /* Background image to cover the entire page */
+    .edit-profile-background {
+        background-image: url('/images/profile-background.jpg'); /* Replace with your image path */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh; /* Ensures the background spans the full viewport height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card {
+        border-radius: 10px;
+        max-width: 600px;
+        width: 100%;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+        background-color: #b6542d;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .form-label {
+        color: #b6542d;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #b6542d;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #933a1f;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    /* Responsive adjustments for smaller screens */
+    @@media (max-width: 768px) {
+        .card-header {
+            font-size: 1.2rem;
+        }
+
+        .card {
+            max-width: 90%;
+        }
+
+        .edit-profile-background {
+            padding: 20px; /* Add padding for better spacing on smaller screens */
+        }
+    }
+</style>

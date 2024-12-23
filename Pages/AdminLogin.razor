@@ -1,0 +1,81 @@
+﻿@inject IAdminService AdminService
+@inject NavigationManager NavigationManager
+@inject SessionService SessionService
+@using System.ComponentModel.DataAnnotations
+
+<div class="row h-100 justify-content-center align-items-center " style="margin-top: 40px;">
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-lg border-0">
+            <div class="card-header text-center text-white" style="background-color: #b6542d; border-radius: 10px 10px 0 0;">
+                <h3>Admin Login</h3>
+            </div>
+            <div class="card-body">
+                @if (!string.IsNullOrEmpty(Message))
+                {
+                    <div class="alert @AlertClass text-center">@Message</div>
+                }
+
+                <EditForm Model="@adminLoginModel" OnValidSubmit="HandleAdminLogin">
+                    <DataAnnotationsValidator />
+                    <div class="mb-4">
+                        <label for="Email" class="form-label text-muted">Email</label>
+                        <InputText id="Email" class="form-control p-3" @bind-Value="adminLoginModel.Email" />
+                        <ValidationMessage For="@(() => adminLoginModel.Email)" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="Password" class="form-label text-muted">Password</label>
+                        <InputText id="Password" type="password" class="form-control p-3" @bind-Value="adminLoginModel.Password" />
+                        <ValidationMessage For="@(() => adminLoginModel.Password)" />
+                    </div>
+                    <div class="text-end">
+                        <a href="#" class="text-decoration-none" style="color: #b6542d; font-size: 0.9rem;">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-4 p-3" style="background-color: #b6542d; border-radius: 8px;">Login</button>
+                </EditForm>
+            </div>
+            <div class="card-footer text-center" style="border-radius: 0 0 10px 10px;">
+                <p class="text-muted mb-0">Don't have an account? <a href="/signup" class="text-decoration-none" style="color: #b6542d;">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private AdminLoginModel adminLoginModel = new AdminLoginModel();
+    private string Message = string.Empty;
+    private string AlertClass = string.Empty;
+
+    private async Task HandleAdminLogin()
+    {
+        try
+        {
+            var admin = AdminService.AuthenticateAdmin(adminLoginModel.Email, adminLoginModel.Password);
+
+            if (admin != null)
+            {
+                await SessionService.SetSession("LoggedInAdmin", new User { Email = admin.Email, Role = "Admin" });
+                NavigationManager.NavigateTo("/recipeList");
+            }
+            else
+            {
+                Message = "Invalid admin credentials.";
+                AlertClass = "alert-danger";
+            }
+        }
+        catch (Exception ex)
+        {
+            Message = $"An error occurred: {ex.Message}";
+            AlertClass = "alert-danger";
+        }
+    }
+
+    private class AdminLoginModel
+    {
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid email address.")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Password is required.")]
+        public string Password { get; set; } = string.Empty;
+    }
+}

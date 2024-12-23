@@ -1,11 +1,125 @@
-﻿
-<div class="message-form">
-    <h3>Leave a Message</h3>
-    <form>
-        <input type="text" placeholder="Name *" required />
-        <input type="email" placeholder="Email *" required />
-        <input type="text" placeholder="Subject" />
-        <textarea placeholder="Message *" required></textarea>
-        <button type="submit">Submit</button>
-    </form>
+﻿@using RecipeManagementApp.Data
+@inject IContactService ContactService
+@using System.ComponentModel.DataAnnotations
+
+<div class="contact-form">
+    <h4 style="color: #b6542d; font-weight: bold;">Leave a Message</h4>
+
+    <!-- Display success/error message -->
+    @if (!string.IsNullOrEmpty(Message))
+    {
+        <div class="alert @AlertClass">
+            @Message
+        </div>
+    }
+
+    <EditForm Model="@contactMessage" OnValidSubmit="@SubmitForm">
+        <DataAnnotationsValidator />
+        <div class="mb-3">
+            <label for="Name">Name</label>
+            <InputText id="Name" class="form-control" @bind-Value="contactMessage.Name" placeholder="Name *" />
+            <ValidationMessage For="@(() => contactMessage.Name)" />
+        </div>
+        <div class="mb-3">
+            <label for="Email">Email</label>
+            <InputText id="Email" type="email" class="form-control" @bind-Value="contactMessage.Email" placeholder="Email *" />
+            <ValidationMessage For="@(() => contactMessage.Email)" />
+        </div>
+        <div class="mb-3">
+            <label for="Subject">Subject</label>
+            <InputText id="Subject" class="form-control" @bind-Value="contactMessage.Subject" placeholder="Subject" />
+        </div>
+        <div class="mb-3">
+            <label for="Message">Message</label>
+            <InputTextArea id="Message" class="form-control" @bind-Value="contactMessage.Message" placeholder="Message *" rows="4" />
+            <ValidationMessage For="@(() => contactMessage.Message)" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="background-color: #b6542d;">Submit</button>
+    </EditForm>
 </div>
+
+@code {
+    private ContactMessageModel contactMessage = new ContactMessageModel();
+    private string Message = string.Empty;
+    private string AlertClass = string.Empty; // "alert-success" or "alert-danger"
+
+    private async Task SubmitForm()
+    {
+        try
+        {
+            var contact = new Contacts
+                {
+                    Name = contactMessage.Name,
+                    Email = contactMessage.Email,
+                    Subject = contactMessage.Subject,
+                    Message = contactMessage.Message,
+                    SubmittedAt = DateTime.Now
+                };
+
+            var isSaved = await Task.Run(() => ContactService.SaveMessage(contact)); // Simulate async save
+
+            if (isSaved)
+            {
+                Message = "Your message has been sent successfully!";
+                AlertClass = "alert-success";
+                contactMessage = new ContactMessageModel(); // Reset form
+            }
+            else
+            {
+                Message = "Failed to send your message. Please try again later.";
+                AlertClass = "alert-danger";
+            }
+        }
+        catch (Exception ex)
+        {
+            Message = $"An error occurred: {ex.Message}";
+            AlertClass = "alert-danger";
+        }
+    }
+
+    private class ContactMessageModel
+    {
+        [Required(ErrorMessage = "Name is required.")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid email address.")]
+        public string Email { get; set; } = string.Empty;
+
+        public string Subject { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Message is required.")]
+        [StringLength(500, ErrorMessage = "Message must not exceed 500 characters.")]
+        public string Message { get; set; } = string.Empty;
+    }
+}
+
+<style>
+    .contact-form label {
+        font-weight: bold;
+        color: #b6542d;
+    }
+
+    .contact-form .form-control {
+        border-radius: 5px;
+        border: 1px solid #b6542d;
+    }
+
+    .alert {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border-radius: 5px;
+    }
+
+    .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+    }
+</style>

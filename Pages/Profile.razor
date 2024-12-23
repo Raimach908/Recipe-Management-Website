@@ -1,0 +1,183 @@
+﻿@page "/profile"
+@using RecipeManagementApp.Data
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@inject SessionService SessionService
+
+<div class="profile-background">
+    <div class="container d-flex justify-content-center align-items-center h-100">
+        <div class="card shadow-lg border-0">
+            <div class="card-header text-center text-white">
+                <h3>Profile</h3>
+            </div>
+            <div class="card-body">
+                @if (user != null)
+                {
+                    <div class="profile-container">
+                        <div class="row mb-3">
+                            <div class="col-4 font-weight-bold text-color">Name:</div>
+                            <div class="col-8">@user.Name</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4 font-weight-bold text-color">Email:</div>
+                            <div class="col-8">@user.Email</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-4 font-weight-bold text-color">Phone Number:</div>
+                            <div class="col-8">@user.PhoneNumber</div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button class="btn btn-primary me-2" @onclick="EditProfile">Edit</button>
+                            <button class="btn btn-danger" @onclick="DeleteProfile">Delete</button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center text-danger">
+                        <p>No user found. Please log in to view your profile.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private User? user;
+    private string? loggedInEmail;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var sessionUser = await SessionService.GetSession<User>("LoggedInUser");
+
+            if (sessionUser != null)
+            {
+                loggedInEmail = sessionUser.Email;
+
+                if (!string.IsNullOrEmpty(loggedInEmail))
+                {
+                    Console.WriteLine($"Logged-in User Email: {loggedInEmail}");
+                    user = UserService.GetUserByEmail(loggedInEmail);
+
+                    if (user == null)
+                    {
+                        Console.WriteLine("User not found in the database.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No email found in the session.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No user session found.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error retrieving user from session: {ex.Message}");
+        }
+    }
+
+    private void EditProfile()
+    {
+        if (user != null)
+        {
+            NavigationManager.NavigateTo($"/EditProfile/{user.Id}");
+        }
+    }
+
+    private void DeleteProfile()
+    {
+        if (user != null)
+        {
+            NavigationManager.NavigateTo($"/DeleteProfile/{user.Id}");
+        }
+        else
+        {
+            Console.WriteLine("No user found to delete.");
+        }
+    }
+}
+
+<style>
+    /* Profile background to cover entire main area */
+    .profile-background {
+        background-image: url('/images/profile-background.jpg'); /* Replace with your image path */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: calc(100vh - var(--header-footer-height)); /* Ensures the background covers the area between navbar and footer */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    :root {
+        --header-footer-height: 150px; /* Adjust based on your header and footer heights */
+    }
+
+    .card {
+        border-radius: 10px;
+        max-width: 600px;
+        width: 100%;
+    }
+
+    .card-header {
+        background-color: #b6542d;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .profile-container .row {
+        font-size: 1rem;
+    }
+
+    .text-color {
+        color: #b6542d;
+    }
+
+    .btn-primary {
+        background-color: #b6542d;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #933a1f;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+        background-color: #b42c37;
+    }
+
+    .text-danger {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .profile-container .row {
+            font-size: 0.9rem;
+        }
+
+        .card-header {
+            font-size: 1.2rem;
+        }
+
+        .card {
+            max-width: 100%;
+            margin: 0 20px;
+        }
+    }
+</style>

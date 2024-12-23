@@ -1,4 +1,5 @@
-﻿
+﻿@inject NavigationManager NavigationManager
+@inject SessionService SessionService
 
 <div class="container-fluid p-0 position-relative" style="background-image: url('/Images/front1.jfif'); background-size: cover; height: 100vh;">
     <div class="overlay position-absolute w-100 h-100"></div>
@@ -15,7 +16,7 @@
             <p class="lead mb-4 animated-text-delay" style="font-family: 'Georgia', serif;">
                 Find new and exciting recipes, share your own, and become part of a growing cooking community!
             </p>
-            <a href="/recipeList" class="btn btn-lg animated-button" style="font-family: 'Georgia', serif; font-weight: bold; background-color: #b6542d; color: white;">
+            <a @onclick="ExploreRecipes" class="btn btn-lg animated-button" style="font-family: 'Georgia', serif; font-weight: bold; background-color: #b6542d; color: white;">
                 Explore Recipes
             </a>
         </div>
@@ -26,3 +27,22 @@
         </div>
     </div>
 </div>
+
+@code {
+    private async Task ExploreRecipes()
+    {
+        // Check if the user is logged in by retrieving session data
+        var sessionUser = await SessionService.GetSession<User>("LoggedInUser");
+
+        if (sessionUser != null)
+        {
+            // User is logged in, navigate to the recipes page
+            NavigationManager.NavigateTo("/recipeList");
+        }
+        else
+        {
+            // User is not logged in, redirect to login page
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}

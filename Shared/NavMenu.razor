@@ -1,6 +1,9 @@
 ﻿@inherits LayoutComponentBase
+@inject IUserService UserService
+@inject SessionService SessionService
+@inject NavigationManager NavigationManager
 
-<link rel="stylesheet" href="css/nav.css"/>
+<link rel="stylesheet" href="css/nav.css" />
 <!-- Bootstrap CSS -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
@@ -17,8 +20,9 @@
             </span>
         </div>
         <div class="d-flex align-items-center">
-            <a href="/login" class="text-white text-decoration-none me-3">Sign in </a>
-            <a href="/login" class="text-white text-decoration-none me-3">Logout </a>
+            <a href="/login" class="text-white text-decoration-none me-3">Sign in</a>
+            <a href="javascript:void(0)" class="text-white text-decoration-none me-3" @onclick="Logout">Logout</a>
+            <a href="/profile" class="text-white text-decoration-none me-3">Account</a>
             <a href="/cart" class="text-white text-decoration-none">items in cart | $0.00</a>
         </div>
     </div>
@@ -26,10 +30,10 @@
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg" style="background-color: white;">
-    <div class="container-fluid" style=" margin-top: 22px;" >
+    <div class="container-fluid" style="margin-top: 22px;">
         <!-- Logo -->
         <a class="navbar-brand" href="/">
-            <img src="Images/logo1.jpg" alt="Culinary Vault Logo" width="34" height="34" class=" rounded-circle" style=" margin-top: 0px;">
+            <img src="Images/logo1.jpg" alt="Culinary Vault Logo" width="34" height="34" class="rounded-circle" style="margin-top: 0px;">
             <span style="font-family: 'Georgia', serif; font-weight: bold; color: #b6542d;">
                 Recipe Vault
             </span>
@@ -56,7 +60,7 @@
                     <a class="nav-link" href="/shop" style="color: #b6542d;">Shop</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/recipeList" style="color: #b6542d;">Recipes</a>
+                    <a class="nav-link" href="/recipeOptions" style="color: #b6542d;">Recipes</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/features" style="color: #b6542d;">Features</a>
@@ -72,4 +76,40 @@
     </div>
 </nav>
 
+@code {
+    private bool IsUserLoggedIn => loggedInUser != null;
+    private dynamic? loggedInUser;
+    private bool hasInitialized = false;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !hasInitialized)
+        {
+            // Retrieve the logged-in user from the session after the initial render
+            loggedInUser = await SessionService.GetSession<dynamic>("LoggedInUser");
+
+            if (loggedInUser != null)
+            {
+                Console.WriteLine($"Logged-in User: {loggedInUser}");
+            }
+            else
+            {
+                Console.WriteLine("No user is logged in.");
+            }
+            Console.WriteLine($"Session Retrieved: {loggedInUser?.Email ?? "null"}");
+
+            hasInitialized = true;
+
+            // Trigger UI refresh
+            StateHasChanged();
+        }
+    }
+
+    private async Task Logout()
+    {
+        // Clear the session and navigate to the login page
+        await SessionService.ClearSession("LoggedInUser");
+        loggedInUser = null; // Clear local user state
+        NavigationManager.NavigateTo("/login");
+    }
+}

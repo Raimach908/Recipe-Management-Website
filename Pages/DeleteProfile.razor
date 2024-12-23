@@ -1,0 +1,151 @@
+﻿@page "/DeleteProfile/{userId:int}"
+@using RecipeManagementApp.Data
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<div class="delete-profile-background">
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="card shadow-lg border-0">
+            <div class="card-header text-center text-white">
+                <h3>Delete Profile</h3>
+            </div>
+            <div class="card-body text-center">
+                @if (user != null)
+                {
+                    <p class="mb-4" style="color: #b6542d;">Are you sure you want to delete your profile?</p>
+                    <div class="text-center">
+                        <button class="btn btn-danger me-2" @onclick="ConfirmDelete">Yes, Delete</button>
+                        <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center text-danger">
+                        <p>User not found. Unable to delete the profile.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int userId { get; set; }
+
+    private User? user;
+
+    protected override void OnInitialized()
+    {
+        // Attempt to retrieve the user from the database by ID
+        try
+        {
+            user = UserService.GetUserById(userId);
+
+            if (user == null)
+            {
+                Console.WriteLine($"No user found with ID: {userId}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error retrieving user: {ex.Message}");
+        }
+    }
+
+    private void ConfirmDelete()
+    {
+        // Confirm and execute the deletion
+        if (user != null)
+        {
+            try
+            {
+                var result = UserService.DeleteUser(user.Id);
+                if (result)
+                {
+                    Console.WriteLine("Profile deleted successfully.");
+                    NavigationManager.NavigateTo("/login");
+                }
+                else
+                {
+                    Console.WriteLine("Failed to delete the profile.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during deletion: {ex.Message}");
+            }
+        }
+    }
+
+    private void Cancel()
+    {
+        // Redirect back to the profile page
+        NavigationManager.NavigateTo("/profile");
+    }
+}
+
+<style>
+    /* Background image to cover the main area */
+    .delete-profile-background {
+        background-image: url('/images/profile-background.jpg'); /* Replace with your image path */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh; /* Ensures the background spans the full viewport height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card {
+        border-radius: 10px;
+        max-width: 600px;
+        width: 100%;
+    }
+
+    .card-header {
+        background-color: #b6542d;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background-color: #b42c37;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    .text-danger {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .card-header {
+            font-size: 1.2rem;
+        }
+
+        .card {
+            max-width: 90%;
+        }
+
+        .delete-profile-background {
+            padding: 20px;
+        }
+    }
+</style>

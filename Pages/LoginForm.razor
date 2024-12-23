@@ -1,17 +1,28 @@
 ﻿@page "/login"
 @using Microsoft.AspNetCore.Components.Forms
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@using System.ComponentModel.DataAnnotations
+@inject SessionService SessionService
 
 <div class="login-container">
     <div class="login-form">
         <h2>Login</h2>
+        @if (!string.IsNullOrEmpty(Message))
+        {
+            <div class="message @MessageType">@Message</div>
+        }
         <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+            <DataAnnotationsValidator />
             <div class="input-group">
                 <label>Email</label>
                 <InputText type="email" @bind-Value="loginModel.Email" placeholder="Enter your email" />
+                <ValidationMessage For="@(() => loginModel.Email)" />
             </div>
             <div class="input-group">
                 <label>Password</label>
                 <InputText type="password" @bind-Value="loginModel.Password" placeholder="Enter your password" />
+                <ValidationMessage For="@(() => loginModel.Password)" />
             </div>
             <div class="forgot-password">
                 <a href="#">Forgot password?</a>
@@ -25,25 +36,86 @@
     <div class="login-info">
         <p>Welcome to Recipe Vault!<br />Discover, save, and share your favorite recipes with ease.</p>
     </div>
-
 </div>
 
 @code {
     private LoginModel loginModel = new LoginModel();
+    private string Message = string.Empty;
+    private string MessageType = string.Empty; // success or error
 
-    private void HandleLogin()
+    private async Task HandleLogin()
     {
-        // Handle login logic here
+        if (string.IsNullOrWhiteSpace(loginModel.Email) || string.IsNullOrWhiteSpace(loginModel.Password))
+        {
+            MessageType = "error";
+            Message = "Email and password are required.";
+            return;
+        }
+
+        try
+        {
+            var user = UserService.AuthenticateUser(loginModel.Email, loginModel.Password);
+            if (user == null) // Handle invalid email/password case
+            {
+                MessageType = "error";
+                Message = "Invalid email or password.";
+                return;
+            }
+
+            // User authenticated successfully
+            await SessionService.SetSession("LoggedInUser", user);
+
+            Console.WriteLine($"User set in session: {user.Email}");
+
+            MessageType = "success";
+            Message = "Login successful. Redirecting...";
+            await Task.Delay(1000);
+            NavigationManager.NavigateTo("/home");
+        }
+        catch (Exception ex) 
+        {
+            Console.WriteLine($"Error during login: {ex.Message}");
+            MessageType = "error";
+            Message = "An error occurred. Please try again later.";
+        }
     }
 
     public class LoginModel
     {
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
         public string Email { get; set; }
+
+        [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }
     }
 }
 
+
 <style>
+    /* Success and error message styles */
+    .message {
+        font-size: 1rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+        border: 2px solid;
+    }
+
+        .message.success {
+            color: #28a745; /* Green color for success */
+            border-color: #28a745;
+            background-color: #d4edda; /* Light green background */
+        }
+
+        .message.error {
+            color: #dc3545; /* Red color for error */
+            border-color: #dc3545;
+            background-color: #f8d7da; /* Light red background */
+        }
+
     /* Base styles */
     body {
         font-family: Arial, sans-serif;
@@ -59,11 +131,11 @@
         flex-wrap: wrap;
         width: 90%;
         max-width: 800px;
-        height: auto;
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         margin: auto;
+        margin-top: 90px;
     }
 
     /* Login form styles with semi-transparent background */
@@ -73,6 +145,7 @@
         max-width: 400px;
         background-color: rgba(255, 255, 255, 0.9);
         border-radius: 8px;
+        height: 700px;
     }
 
     .login-form h2 {
@@ -120,19 +193,22 @@
     /* Right-side info section with background image */
     .login-info {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
+        flex-direction: column; /* Ensure content stacks vertically */
+        align-items: center; /* Center horizontally */
+        justify-content: center; /* Center vertically */
+        text-align: center; /* Center text alignment */
         padding: 2rem;
         width: 100%;
         max-width: 500px;
         color: white;
-        background-image: url('/images/bg3.jfif'); /* Make sure this path is correct */
+        background-image: url('/images/bg3.jfif'); /* Ensure this path is correct */
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-blend-mode: overlay;
+        height: 100%; /* Ensure it fills the height of the container */
     }
+
 
     .login-info p {
         font-size: 1.2rem;
@@ -143,7 +219,7 @@
     @@media (min-width: 768px) {
         .login-container {
             flex-direction: row;
-            height: 400px;
+            height: 500px;
         }
         .login-form, .login-info {
             width: 50%;

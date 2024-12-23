@@ -1,0 +1,70 @@
+﻿@using RecipeManagementApp.Data
+@inject NavigationManager NavigationManager
+@inject CartService CartService
+@inject SessionService SessionService
+
+@if (recipe != null)
+{
+    <div class="card recipe-card mb-3 shadow-sm">
+        <div class="card-header">
+            <h4 class="mb-0" style="font-weight: bold;">@recipe.Name</h4>
+        </div>
+        <div class="card-body">
+            <img src="data:image/png;base64,@Convert.ToBase64String(recipe.ImageData)" alt="@recipe.Name" class="card-img-top recipe-image" />
+            <br /><br />
+            <p class="card-text"><strong>Description:</strong> @recipe.Description</p>
+
+            <p><strong>Ingredients:</strong></p>
+            <ul class="list-styled">
+                @if (!string.IsNullOrEmpty(recipe.IngredientsString))
+                {
+                    var ingredients = recipe.IngredientsString.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(ingredient => ingredient.Trim());
+
+                    foreach (var ingredient in ingredients)
+                    {
+                        <li>@ingredient</li>
+                    }
+                }
+                else
+                {
+                    <li>No ingredients available.</li>
+                }
+            </ul>
+
+            <p><strong>Instructions:</strong> @recipe.Instructions</p>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <p class="mb-0 me-auto"><strong>Category:</strong> @recipe.Category</p>
+            <div>
+                <button class="btn btn-success" id="addCartBtn" @onclick="AddToCartClicked">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p class="none">No recipe found.</p>
+}
+
+@code {
+    [Parameter]
+    public Recipe recipe { get; set; }
+
+    private async Task AddToCartClicked()
+    {
+        var sessionUser = await SessionService.GetSession<User>("LoggedInUser");
+
+        if (sessionUser != null)
+        {
+            CartService.AddToCart(sessionUser.Email, recipe.Id, recipe.Name);
+            Console.WriteLine($"{recipe.Name} added to cart for {sessionUser.Email}");
+            // Navigate to the cart page
+            NavigationManager.NavigateTo("/Cart");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}

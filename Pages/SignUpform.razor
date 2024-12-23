@@ -1,21 +1,38 @@
 ﻿@page "/signup"
 @using Microsoft.AspNetCore.Components.Forms
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@using System.ComponentModel.DataAnnotations
+@using System.Net.Mail
 
 <div class="login-container">
     <div class="login-form">
         <h2>Sign Up</h2>
+        @if (!string.IsNullOrEmpty(Message))
+        {
+            <div class="message @MessageType">@Message</div>
+        }
         <EditForm Model="@signUpModel" OnValidSubmit="HandleSignUp">
+            <DataAnnotationsValidator />
             <div class="input-group">
                 <label>Name</label>
                 <InputText type="text" @bind-Value="signUpModel.Name" placeholder="Enter your name" />
+                <ValidationMessage For="@(() => signUpModel.Name)" />
             </div>
             <div class="input-group">
                 <label>Email</label>
                 <InputText type="email" @bind-Value="signUpModel.Email" placeholder="Enter your email" />
+                <ValidationMessage For="@(() => signUpModel.Email)" />
+            </div>
+            <div class="input-group">
+                <label>Phone Number</label>
+                <InputText type="tel" @bind-Value="signUpModel.PhoneNo" placeholder="e.g., +1 123-456-7890" />
+                <ValidationMessage For="@(() => signUpModel.PhoneNo)" />
             </div>
             <div class="input-group">
                 <label>Password</label>
                 <InputText type="password" @bind-Value="signUpModel.Password" placeholder="Enter your password" />
+                <ValidationMessage For="@(() => signUpModel.Password)" />
             </div>
             <button type="submit" class="login-button">Sign Up</button>
         </EditForm>
@@ -30,16 +47,74 @@
 
 @code {
     private SignUpModel signUpModel = new SignUpModel();
+    private string Message = string.Empty;
+    private string MessageType = string.Empty; // success or error
 
     private void HandleSignUp()
     {
-        // Handle sign up logic here
+        if (!IsValidEmail(signUpModel.Email))
+        {
+            MessageType = "error";
+            Message = "Signup failed. The email address is not valid. Please enter a valid email address.";
+            return;
+        }
+
+        var user = new User
+        {
+            Name = signUpModel.Name,
+            Email = signUpModel.Email,
+            PasswordHash = signUpModel.Password,
+            PhoneNumber = signUpModel.PhoneNo
+        };
+
+        var isRegistered = UserService.RegisterUser(user);
+        if (isRegistered)
+        {
+            MessageType = "success";
+            Message = "Signup successful! Redirecting to login...";
+            InvokeAsync(async () =>
+            {
+                await Task.Delay(2000); // Wait for 1 second
+                NavigationManager.NavigateTo("/login");
+            });
+        }
+        else
+        {
+            MessageType = "error";
+            Message = "Signup failed. User with this email already exists. Please try again.";
+        }
+    }
+
+    private bool IsValidEmail(string email)
+    {
+        try
+        {
+            var addr = new MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public class SignUpModel
     {
+        [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email address")]
         public string Email { get; set; }
+
+        [Required(ErrorMessage = "Phone number is required")]
+        [Phone(ErrorMessage = "Invalid phone number")]
+        public string PhoneNo { get; set; }
+
+        [Required(ErrorMessage = "Password is required")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$",
+            ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character")]
         public string Password { get; set; }
     }
 }
@@ -64,6 +139,7 @@
         overflow: hidden;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         margin: auto;
+        margin-top: 80px;
     }
 
     /* Sign up form styles with semi-transparent background */
@@ -75,23 +151,24 @@
         border-radius: 8px;
     }
 
-    .login-form h2 {
-        color: #b6542d;
-    }
+        .login-form h2 {
+            color: #b6542d;
+        }
 
     .input-group {
         margin-bottom: 1rem;
     }
 
-    .input-group label {
-        display: block;
-        font-weight: bold;
-        color: #b6542d;
-    }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            color: #b6542d;
+        }
 
     input[type="text"],
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="tel"] {
         width: 100%;
         padding: 0.5rem;
         border: 1px solid #b6542d;
@@ -117,7 +194,29 @@
         margin-top: 1rem;
     }
 
-    /* Right-side info section with background image */
+    /* Success and error message styles */
+    .message {
+        font-size: 1rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+        border: 2px solid;
+    }
+
+        .message.success {
+            color: #28a745; /* Green color for success */
+            border-color: #28a745;
+            background-color: #d4edda; /* Light green background */
+        }
+
+        .message.error {
+            color: #dc3545; /* Red color for error */
+            border-color: #dc3545;
+            background-color: #f8d7da; /* Light red background */
+        }
+
     .login-info {
         display: flex;
         align-items: center;
@@ -134,16 +233,17 @@
         background-blend-mode: overlay;
     }
 
-    .login-info p {
-        font-size: 1.2rem;
-        font-weight: bold;
-    }
+        .login-info p {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
 
     /* Responsive adjustments */
     @@media (min-width: 768px) {
         .login-container {
             flex-direction: row;
         }
+
         .login-form, .login-info {
             width: 50%;
         }

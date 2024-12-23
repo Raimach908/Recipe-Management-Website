@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using RecipeManagementApp.Data;
+using Blazored.SessionStorage;
+using RecipeManagementApp.Interfaces;
 using RecipeManagementApp.Services;
 
 namespace RecipeManagementApp
@@ -20,6 +19,16 @@ namespace RecipeManagementApp
 
             // Registering the RecipeService with the connection string
             builder.Services.AddSingleton<RecipeService>(sp => new RecipeService(connectionString));
+            builder.Services.AddSingleton<IUserService, UserService>(sp => new UserService(connectionString));
+
+            builder.Services.AddHttpContextAccessor(); // For accessing HttpContext
+
+            // Add services
+            builder.Services.AddScoped<SessionService>();
+            builder.Services.AddBlazoredSessionStorage();
+            builder.Services.AddScoped<IContactService, ContactService>(sp => new ContactService(connectionString));
+            builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddTransient<CartService>(sp => new CartService(connectionString));
 
             var app = builder.Build();
 
@@ -34,6 +43,13 @@ namespace RecipeManagementApp
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+
+            // Redirect root URL to /home
+            app.MapGet("/", context =>
+            {
+                context.Response.Redirect("/home");
+                return Task.CompletedTask;
+            });
 
             app.MapBlazorHub();
             app.MapFallbackToPage("/_Host");

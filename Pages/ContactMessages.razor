@@ -1,0 +1,60 @@
+﻿@page "/contactMsg"
+@using RecipeManagementApp.Data
+@inject IContactService ContactService
+
+<h2 class="text-center mt-4" style="color: #b6542d; font-weight: bold;">Contact Messages</h2>
+
+<div class="container mt-4">
+    @if (contactMessages != null && contactMessages.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="text-white" style="background-color: #b6542d;">
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                        <th>Submitted At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var message in contactMessages)
+                    {
+                        <tr>
+                            <td>@message.Id</td>
+                            <td>@message.Name</td>
+                            <td>@message.Email</td>
+                            <td>@message.Subject</td>
+                            <td>@message.Message</td>
+                            <td>@message.SubmittedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p class="text-center text-danger">No contact messages found.</p>
+    }
+</div>
+
+@code {
+    private List<Contacts>? contactMessages;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Fetch all contact messages and convert to List
+            contactMessages = (await Task.Run(() => ContactService.GetAllMessages())).ToList();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching contact messages: {ex.Message}");
+        }
+    }
+}
+
