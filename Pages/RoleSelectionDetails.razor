@@ -2,7 +2,8 @@
 @inject SessionService SessionService
 
 <div class="row justify-content-center">
-    <div class="col-md-6"> <br />
+    <div class="col-md-6">
+        <br />
         <h2 class="text-center" style="color: #b6542d; font-weight: bold;">Choose Your Role</h2>
         <p class="text-center mb-4">Please select whether you are an Admin or a User to proceed.</p>
         <div class="text-center">
@@ -18,6 +19,9 @@
 
 @code {
     [Parameter]
+    public int RecipeId { get; set; } // Pass the RecipeId from the parent component
+
+    [Parameter]
     public EventCallback OnAdminSelected { get; set; }
 
     private async Task SelectAdmin()
@@ -27,7 +31,7 @@
         if (sessionAdmin != null)
         {
             // Navigate to user recipe details page
-            NavigationManager.NavigateTo($"/recipeList");
+            NavigationManager.NavigateTo($"/recipeDetails/{RecipeId}");
         }
         else
         {
@@ -38,14 +42,17 @@
 
     private async Task GoToUserLogin()
     {
+        // Check if the user is logged in
         var sessionUser = await SessionService.GetSession<User>("LoggedInUser");
 
         if (sessionUser != null)
         {
-            NavigationManager.NavigateTo("/recipeListUser");
+            // Navigate to user recipe details page
+            NavigationManager.NavigateTo($"/recipeDetailsUser/{RecipeId}");
         }
         else
         {
+            // Navigate to login page if not logged in
             NavigationManager.NavigateTo("/login");
         }
     }

@@ -2,6 +2,7 @@
 @inject NavigationManager NavigationManager
 @inject CartService CartService
 @inject SessionService SessionService
+<link href="css/card.css" rel="stylesheet" />
 
 @if (recipe != null)
 {
@@ -37,7 +38,7 @@
         <div class="card-footer d-flex justify-content-between">
             <p class="mb-0 me-auto"><strong>Category:</strong> @recipe.Category</p>
             <div>
-                <button class="btn btn-success" id="addCartBtn" @onclick="AddToCartClicked">Add to Cart</button>
+                <button class="btn btn-success " id="addCartBtn" @onclick="AddToCartClicked">Add to Cart</button>
             </div>
         </div>
     </div>

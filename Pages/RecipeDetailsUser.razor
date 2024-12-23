@@ -1,0 +1,108 @@
+﻿@page "/recipeDetailsUser/{id:int?}"
+@using RecipeManagementApp.Data
+@using RecipeManagementApp.Services
+@inject RecipeService RecipeService
+@inject NavigationManager NavigationManager
+
+<h3 class="text-center mt-4 text-white" style="font-weight: bold; font-family: 'Georgia', serif; font-size:40px; font-style: italic">
+    Recipe Details
+</h3>
+
+<div class="container mt-4" style="font-family: 'Georgia', serif;">
+    <div class="recipe-form p-4 border rounded shadow-lg bg-white" style="max-width: 440px; margin: 0 auto; background-color: white;">
+        @if (id.HasValue)
+        {
+            recipe = RecipeService.GetRecipeById(id.Value);
+            if (recipe != null)
+            {
+                <h4 class="text-center mb-3" style="font-weight: bold; color: #b6542d;">@recipe.Name</h4>
+                <div class="text-center mb-3">
+                    <img src="data:image/png;base64,@Convert.ToBase64String(recipe.ImageData)" alt="@recipe.Name" class="card-img-top recipe-image" />
+                </div>
+
+                <div class="mb-3">
+                    <p><strong style="color: #b6542d;">Description:</strong></p>
+                    <p>@recipe.Description</p>
+                </div>
+
+                <div class="mb-3">
+                    <p><strong style="color: #b6542d;">Ingredients:</strong></p>
+                    <ul class="list-styled">
+                        @if (!string.IsNullOrEmpty(recipe.IngredientsString))
+                        {
+                            // Split the IngredientsString by commas and trim any extra whitespace
+                            var ingredients = recipe.IngredientsString.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(ingredient => ingredient.Trim());
+
+                            foreach (var ingredient in ingredients)
+                            {
+                                <li>@ingredient</li>
+                            }
+                        }
+                        else
+                        {
+                            <li>No ingredients available.</li>
+                        }
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <p><strong style="color: #b6542d;">Instructions:</strong></p>
+                    <p>@recipe.Instructions</p>
+                </div>
+            }
+            else
+            {
+                <p class="text-center">No details found for this recipe.</p>
+            }
+        }
+        else
+        {
+            <div class="text-center">
+                <p style="color: #b6542d;">Please enter a Recipe ID to view details:</p>
+                <InputText id="recipeId" class="form-control form-control-red" @bind-Value="inputId" />
+                @if (!string.IsNullOrEmpty(validationMessage))
+                {
+                    <div class="text-danger">@validationMessage</div>
+                }
+                <button @onclick="LoadRecipe" class="btn btn-danger mt-2" style="background-color: #b6542d; color: white;">Load Recipe</button>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    public Recipe recipe;
+    [Parameter]
+    public int? id { get; set; }
+
+    private string inputId;
+
+
+    private string validationMessage = ""; // For storing validation messages
+
+    private void LoadRecipe()
+    {
+        validationMessage = "";
+        if (int.TryParse(inputId, out int parsedId))
+        {
+            NavigationManager.NavigateTo($"/recipeDetails/{parsedId}");
+        }
+        else
+        {
+            // Optionally, show an error message for invalid input
+            inputId = string.Empty;
+            // Set validation message for invalid input
+            validationMessage = "Please enter a valid Recipe ID (greater than 0).";
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        // Load the recipe only if the ID is available
+        if (id.HasValue)
+        {
+            recipe = RecipeService.GetRecipeById(id.Value);
+        }
+    }
+}

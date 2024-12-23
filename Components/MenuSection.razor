@@ -1,6 +1,8 @@
 ﻿@typeparam TItem
 
 @inject NavigationManager navigationManager
+@inject SessionService SessionService
+
 <div class="menu-section">
     <div class="row justify-content-center">
         @foreach (var item in Items)
@@ -16,7 +18,7 @@
                             <h5 class="card-title">@menuItem.Name</h5>
                             @* <p class="card-text">Price: @menuItem.Price.ToString("C")</p> *@
                             <div class="mt-auto">
-                                <button class="btn btn-primary" @onclick="() => getDetails(menuItem.Id) ">View Details</button>
+                                <button class="btn btn-primary" @onclick="() => getDetails(menuItem.Id)">View Details</button>
                             </div>
                         </div>
                     </div>
@@ -29,16 +31,11 @@
 @code {
     [Parameter]
     public List<TItem> Items { get; set; }
-    private void getDetails(int recipeId)
+
+    private async Task getDetails(int recipeId)
     {
-        if (navigationManager != null)
-        {
-            navigationManager.NavigateTo($"/recipeDetails/{recipeId}");
-        }
-        else
-        {
-            Console.WriteLine("NavigationManager is null");
-        }
+        // Pass the recipeId as a parameter to the recipeDetailsOption page
+        navigationManager.NavigateTo($"/recipeDetailsOption/{recipeId}");
     }
 }
 
@@ -72,7 +69,7 @@
         }
 
             .menu-section .btn:hover {
-                background-color: darken(#b6542d, 10%); /* Darken button on hover */
+                background-color: #933a1f; /* Darken button on hover */
             }
 
 </style>

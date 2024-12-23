@@ -38,6 +38,9 @@
 </div>
 
 @code {
+    [Parameter]
+    public int RecipeId { get; set; } // Pass the RecipeId from the parent component
+
     private AdminLoginModel adminLoginModel = new AdminLoginModel();
     private string Message = string.Empty;
     private string AlertClass = string.Empty;
@@ -46,21 +49,27 @@
     {
         try
         {
+            // Authenticate the admin
             var admin = AdminService.AuthenticateAdmin(adminLoginModel.Email, adminLoginModel.Password);
 
             if (admin != null)
             {
-                await SessionService.SetSession("LoggedInAdmin", new User { Email = admin.Email, Role = "Admin" });
-                NavigationManager.NavigateTo("/recipeList");
+                // Save the admin session
+                //await SessionService.SetSession("LoggedInAdmin", new User { Email = admin.Email, Role = "Admin" });
+
+                // Navigate to admin recipe details page
+                NavigationManager.NavigateTo($"/recipeDetails/{RecipeId}");
             }
             else
             {
+                // Show error message for invalid credentials
                 Message = "Invalid admin credentials.";
                 AlertClass = "alert-danger";
             }
         }
         catch (Exception ex)
         {
+            // Show error message for exceptions
             Message = $"An error occurred: {ex.Message}";
             AlertClass = "alert-danger";
         }

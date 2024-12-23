@@ -1,0 +1,22 @@
+﻿@page "/recipeDetailsOption/{id:int}"
+
+@inject NavigationManager NavigationManager
+@inject SessionService SessionService
+
+<RoleSelectionDetails RecipeId="id" OnAdminSelected="ShowAdminLoginHandler" />
+@if (ShowAdminLogin)
+{
+    <AdminLoginDetails RecipeId="id" />
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private bool ShowAdminLogin = false;
+
+    private void ShowAdminLoginHandler()
+    {
+        ShowAdminLogin = true;
+    }
+}
